@@ -7,7 +7,7 @@ import { Button, Container, CtaPair, Section, SectionHeading } from "@/component
 import { FeatureIcon } from "@/components/ui/icons";
 import { Parallax, Reveal, ScrollStatement } from "@/components/ui/reveal";
 import { PhotoPlaceholder } from "@/components/ui/visuals";
-import { BrowserFrame, SalesPipelineMock, ScreenshotPeek, TalentMiniMock } from "@/components/ui/product-mocks";
+import { BrowserFrame, FollowUpsMock, SalesPipelineMock, ScreenshotPeek, TalentMiniMock } from "@/components/ui/product-mocks";
 import { advantages, deliverySteps, painPoints, products, proofStats, services } from "@/lib/content";
 import { site } from "@/lib/site";
 
@@ -32,21 +32,8 @@ export default function HomePage() {
               url="app.walumo — Kazi Pro"
               priority
             />
-            <TalentMiniMock className="absolute -bottom-10 -left-4 hidden lg:block lg:-left-12" />
-            <div className="absolute -right-4 top-10 hidden w-[300px] lg:-right-12 lg:block">
-              <div className="rounded-2xl bg-white p-4 shadow-float">
-                <p className="text-[12px] font-bold uppercase tracking-[0.08em] text-muted">Follow-ups today</p>
-                <ul className="mt-3 space-y-2">
-                  {["Call Savanna Foods", "Send proposal to Mara Distributors", "Visit Kilimani Hardware"].map((t) => (
-                    <li key={t} className="flex items-center gap-2 text-[13px] text-ink">
-                      <span className="size-2 rounded-full bg-accent-strong" aria-hidden="true" />
-                      {t}
-                    </li>
-                  ))}
-                </ul>
-                <p className="mt-3 text-[11.5px] text-muted">Sales Tracker · illustrative data</p>
-              </div>
-            </div>
+            <TalentMiniMock delay={500} className="absolute -bottom-10 -left-4 hidden lg:block lg:-left-12" />
+            <FollowUpsMock delay={800} className="absolute -right-4 top-10 hidden w-[300px] lg:-right-12 lg:block" />
           </div>
         </Container>
       </Hero>
