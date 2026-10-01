@@ -342,10 +342,12 @@ export const advantages: { icon: IconName; title: string; text: string }[] = [
   { icon: "rocket", title: "A partner that scales with you", text: "From SME to multi-country enterprise, on the same platform." },
 ];
 
-export const painPoints: { icon: IconName; title: string; text: string }[] = [
-  { icon: "book", title: "Spreadsheets everywhere", text: "Critical HR, hiring and sales data lives in files that are out of date the moment they are shared." },
-  { icon: "handshake", title: "Work that runs on WhatsApp", text: "Approvals, CVs and customer follow-ups are scattered across chats nobody can search." },
-  { icon: "layers", title: "Tools that never talk", text: "Disconnected systems mean the same information is typed again and again, and leaders report on last month." },
+export type PainPoint = { icon: IconName; title: string; text: string; scene: "spreadsheets" | "chat" | "tools" };
+
+export const painPoints: PainPoint[] = [
+  { icon: "book", scene: "spreadsheets", title: "Spreadsheets everywhere", text: "Critical HR, hiring and sales data lives in files that are out of date the moment they are shared." },
+  { icon: "handshake", scene: "chat", title: "Work that runs on WhatsApp", text: "Approvals, CVs and customer follow-ups are scattered across chats nobody can search." },
+  { icon: "layers", scene: "tools", title: "Tools that never talk", text: "Disconnected systems mean the same information is typed again and again, and leaders report on last month." },
 ];
 
 /* ------------------------------------------------------------------ */

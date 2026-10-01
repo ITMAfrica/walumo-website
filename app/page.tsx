@@ -1,6 +1,7 @@
 import { Hero } from "@/components/sections/hero";
 import { TrustBadge, TrustedStrip } from "@/components/sections/social-proof";
 import { CtaBanner, FeatureGrid, PillarCard, StatsBand } from "@/components/sections/blocks";
+import { PainCards } from "@/components/sections/pain-cards";
 import { PeopleBento, Timeline } from "@/components/sections/gallery";
 import { InsightsGrid } from "@/components/sections/collections";
 import { Button, Container, CtaPair, Section, SectionHeading } from "@/components/ui/primitives";
@@ -46,19 +47,9 @@ export default function HomePage() {
           <ScrollStatement text="African teams are still running critical operations through spreadsheets, WhatsApp and disconnected tools. Walumo gives them one reliable way of working." />
         </Container>
         <Container>
-          <ul className="mt-16 grid gap-5 md:grid-cols-3">
-            {painPoints.map((p, i) => (
-              <Reveal as="li" key={p.title} delay={i * 80} className="h-full">
-                <div className="h-full rounded-[var(--radius-card)] bg-white p-7 shadow-card transition-[translate,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-lift">
-                  <span className="flex size-11 items-center justify-center rounded-xl bg-[#fdecec] text-[#b3412e]">
-                    <FeatureIcon name={p.icon} size={20} />
-                  </span>
-                  <h3 className="mt-6 text-lg font-bold text-ink">{p.title}</h3>
-                  <p className="mt-2 text-[15px] leading-6 text-muted">{p.text}</p>
-                </div>
-              </Reveal>
-            ))}
-          </ul>
+          <div className="mt-16">
+            <PainCards items={painPoints} />
+          </div>
         </Container>
       </Section>
 
