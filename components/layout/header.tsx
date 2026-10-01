@@ -8,6 +8,7 @@ import { Logo } from "@/components/ui/logo";
 import { ArrowRight, ChevronDown, Close, FeatureIcon, Menu, Plus } from "@/components/ui/icons";
 import { Button, cn } from "@/components/ui/primitives";
 import { PhotoPlaceholder } from "@/components/ui/visuals";
+import { ScrollProgress } from "@/components/ui/reveal";
 
 export function AnnouncementBar() {
   const a = site.announcement;
@@ -144,10 +145,22 @@ export function Header() {
   return (
     <header
       className={cn(
-        "sticky top-0 z-50 border-b bg-white/95 backdrop-blur transition-[border-color,box-shadow]",
-        scrolled ? "border-line shadow-[0_1px_0_rgb(19_33_40/0.02)]" : "border-transparent",
+        "sticky top-0 z-50 border-b transition-[border-color,box-shadow] duration-300",
+        scrolled ? "border-line/70 shadow-[0_8px_30px_-12px_rgb(6_20_51/0.18)]" : "border-transparent",
       )}
     >
+      {/*
+       * Frosted background on its own layer: a backdrop-filter on <header> itself
+       * would become the containing block of the fixed mobile menu below.
+       */}
+      <div
+        className={cn(
+          "absolute inset-0 -z-10 backdrop-blur-xl backdrop-saturate-150 transition-colors duration-300",
+          scrolled ? "bg-white/85" : "bg-white/95",
+        )}
+        aria-hidden="true"
+      />
+      <ScrollProgress className="absolute inset-x-0 bottom-[-1px]" />
       <div className="mx-auto flex h-[72px] max-w-[1280px] items-center justify-between gap-6 px-5 sm:px-8 lg:px-10">
         <Logo />
 
@@ -181,7 +194,7 @@ export function Header() {
                   </button>
                   <div
                     className={cn(
-                      "absolute left-1/2 top-full pt-3 transition-[opacity,transform] duration-200",
+                      "absolute left-1/2 top-full pt-3 transition-[opacity,translate] duration-200",
                       i >= 3 ? "-translate-x-[70%]" : "-translate-x-[35%]",
                       open === i
                         ? "visible translate-y-0 opacity-100"
