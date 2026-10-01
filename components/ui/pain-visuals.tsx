@@ -75,7 +75,7 @@ export function ChatScene({ className }: { className?: string }) {
           <div
             className={cn(
               "max-w-[88%] rounded-2xl border px-3 py-2 shadow-card",
-              m.mine ? "rounded-br-md border-[#c8e9d0] bg-[#dcf5e3]" : "rounded-bl-md border-line bg-white",
+              m.mine ? "rounded-br-md border-[#a9d9b7] bg-[#c9ecd3]" : "rounded-bl-md border-line bg-white",
             )}
           >
             {!m.mine && <p className="text-[10.5px] font-bold text-accent-strong">{m.from}</p>}
