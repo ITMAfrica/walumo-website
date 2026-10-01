@@ -3,7 +3,7 @@ import { Hero } from "@/components/sections/hero";
 import { CtaBanner, FeatureGrid, Steps } from "@/components/sections/blocks";
 import { Container, Section, SectionHeading } from "@/components/ui/primitives";
 import { deliverySteps } from "@/lib/content";
-import { site } from "@/lib/site";
+import { hasWhatsapp, site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Support",
@@ -48,7 +48,7 @@ export default function SupportPage() {
         </Container>
       </Section>
 
-      <CtaBanner title="Need help with your Walumo setup?" text={`Email ${site.email} or message us on WhatsApp — a real person will answer.`} />
+      <CtaBanner title="Need help with your Walumo setup?" text={`Email ${site.email}${hasWhatsapp ? " or message us on WhatsApp" : " or use the contact form"} — a real person will answer.`} />
     </>
   );
 }

@@ -38,6 +38,17 @@ export default async function EventPage({ params }: PageProps<"/insights/events/
             Walumo <em className="italic text-accent-strong">Hacklab</em>
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-muted sm:text-lg">{event.summary}</p>
+          {event.highlights && (
+            <dl className="mx-auto mt-10 grid max-w-xl grid-cols-3 gap-6">
+              {event.highlights.map((h) => (
+                <div key={h.label}>
+                  <dt className="sr-only">{h.label}</dt>
+                  <dd className="font-serif text-5xl tracking-[-0.03em] text-ink">{h.value}</dd>
+                  <dd className="mt-1 text-[14px] text-muted">{h.label}</dd>
+                </div>
+              ))}
+            </dl>
+          )}
         </Container>
         <Container className="pb-16">
           <PhotoPlaceholder

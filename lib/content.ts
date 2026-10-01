@@ -13,8 +13,101 @@ import type { IconName } from "./site";
 
 export const proofStats = [
   { value: "20+", label: "African countries across the ITM Holding footprint" },
-  { value: "3", label: "connected enterprise platforms" },
+  { value: "4.8K+", label: "employee records managed in Kazi Pro" }, // SAMPLE figure
   { value: "23+", label: "companies running Kazi Pro" },
+];
+
+/* ------------------------------------------------------------------ */
+/* ⚠️ SAMPLE CONTENT — fictional figures, quotes and case study written  */
+/* to complete the site. Replace with real, approved data before launch. */
+/* Search the codebase for "SAMPLE" to find every item.                  */
+/* ------------------------------------------------------------------ */
+
+/** Home page proof figures. SAMPLE: "4.8K+" and "3x" are illustrative. */
+export const homeProofStats = [
+  { value: "23+", label: "companies running Kazi Pro every day" },
+  { value: "4.8K+", label: "employee records managed in Kazi Pro" },
+  { value: "3x", label: "faster leave approvals than email and paper" },
+  { value: "20+", label: "African countries across the ITM Holding footprint" },
+];
+
+export type Testimonial = { quote: string; name: string; role: string; company: string; photo?: string };
+
+/** SAMPLE: fictional quotes — replace with quotes approved in writing by the people quoted. */
+export const testimonials: Testimonial[] = [
+  {
+    quote:
+      "Leave requests used to sit in inboxes for days. Now managers approve from their phones, and HR finally has balances everyone trusts.",
+    name: "Grace M.",
+    role: "HR Manager",
+    company: "ITM Kenya",
+  },
+  {
+    quote:
+      "We run HR for several entities in different countries. Having every employee file and approval in one place changed how we report to leadership.",
+    name: "Patrick K.",
+    role: "Group HR Coordinator",
+    company: "ITM RDC",
+  },
+  {
+    quote:
+      "Talent Pro gave our recruiters one pipeline instead of CVs scattered across email and WhatsApp. We shortlist in days, not weeks.",
+    name: "Aline N.",
+    role: "Talent Acquisition Lead",
+    company: "ITM Rwanda",
+  },
+];
+
+export type CaseStudy = {
+  slug: string;
+  client: string;
+  product: string;
+  title: string;
+  summary: string;
+  metrics: { value: string; label: string }[];
+  challenge: string;
+  solution: string[];
+  results: string[];
+  quote: Testimonial;
+  image: string;
+};
+
+/** SAMPLE: illustrative case study built on the ITM Holding rollout of Kazi Pro. */
+export const caseStudies: CaseStudy[] = [
+  {
+    slug: "itm-holding-kazi-pro",
+    client: "ITM Holding",
+    product: "Kazi Pro",
+    title: "How ITM Holding moved HR for 23+ companies onto one platform",
+    summary:
+      "Leave, approvals and employee files were spread across email, paper and spreadsheets in every country. Kazi Pro brought them into one workspace for the whole group.",
+    metrics: [
+      { value: "3x", label: "faster leave approvals" },
+      { value: "4.8K+", label: "employee records centralised" },
+      { value: "20+", label: "countries on one HR platform" },
+    ],
+    challenge:
+      "Each entity handled HR its own way: leave requests by email or on paper, balances rebuilt in spreadsheets every month, and no consolidated view of the workforce for group leadership.",
+    solution: [
+      "Kazi Pro configured per entity, with local leave policies and approval chains",
+      "Employee files migrated from spreadsheets and checked with each HR team",
+      "Managers and employees trained to request and approve from any device",
+      "Staged go-live, country by country, with Walumo support on site",
+    ],
+    results: [
+      "Leave approvals down from around 4 days to about 1 day on average",
+      "One trusted source for leave balances and employee files",
+      "Monthly HR reports produced in minutes instead of days",
+    ],
+    quote: {
+      quote:
+        "For the first time, group leadership sees the same workforce numbers as the HR teams in each country, without anyone rebuilding a spreadsheet.",
+      name: "Patrick K.",
+      role: "Group HR Coordinator",
+      company: "ITM RDC",
+    },
+    image: "/images/team-workshop.jpg",
+  },
 ];
 
 /** ITM Holding group entities — logo wall (logos in /public/logos). */
@@ -556,6 +649,8 @@ export type EventItem = {
   summary: string;
   status: string;
   cover: string;
+  /** SAMPLE figures for the Hacklab — replace with the real ones. */
+  highlights?: { value: string; label: string }[];
   gallery: { src: string; alt: string }[];
 };
 
@@ -574,6 +669,11 @@ export const events: EventItem[] = [
       "Developers, designers and product thinkers came together to build, pitch and demo solutions — part of Walumo's commitment to spotlighting Africa's emerging tech talent.",
     status: "Past event",
     cover: "/images/hackathon/img_2026.jpg",
+    highlights: [
+      { value: "120+", label: "participants" },
+      { value: "18", label: "teams" },
+      { value: "48h", label: "of building" },
+    ],
     gallery: hacklabPhotos.map((p, i) => ({
       src: `/images/hackathon/${p}.jpg`,
       alt: `Walumo Hacklab — photo ${i + 1}`,

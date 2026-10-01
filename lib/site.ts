@@ -46,12 +46,15 @@ export type NavItem = {
 
 /**
  * WhatsApp number in international format without "+" or spaces (e.g. "254700000000").
- * TODO: add Walumo's WhatsApp business number. While empty, WhatsApp buttons open the contact page.
+ * TODO: add Walumo's WhatsApp business number. While empty, WhatsApp buttons become
+ * "Talk to our team" (contact page) and WhatsApp-only links are hidden.
  */
 const WHATSAPP_NUMBER = "";
 const WHATSAPP_MESSAGE = "Hello Walumo, I'd like to talk about your products.";
 
-export const whatsappHref = WHATSAPP_NUMBER
+export const hasWhatsapp = WHATSAPP_NUMBER !== "";
+
+export const whatsappHref = hasWhatsapp
   ? `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`
   : "/contact#whatsapp";
 
@@ -67,7 +70,9 @@ export const site = {
   trustBadge: "Built by Walumo. Backed by ITM Holding.",
   primaryCta: { label: "Request a Demo", href: "/contact" },
   secondaryCta: { label: "Explore Products", href: "/products" },
-  whatsappCta: { label: "WhatsApp Us", href: whatsappHref },
+  whatsappCta: hasWhatsapp
+    ? { label: "WhatsApp Us", href: whatsappHref }
+    : { label: "Talk to our team", href: "/contact" },
   announcement: {
     date: "Hacklab",
     text: "Highlights from the Walumo Hacklab, our build event for Africa's emerging tech talent",

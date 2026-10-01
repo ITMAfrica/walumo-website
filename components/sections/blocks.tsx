@@ -15,7 +15,7 @@ import { FeatureIcon, Plus } from "@/components/ui/icons";
 import { CountUp, Reveal } from "@/components/ui/reveal";
 import { PhotoPlaceholder } from "@/components/ui/visuals";
 import { products, type Product } from "@/lib/content";
-import { site } from "@/lib/site";
+import { hasWhatsapp, site } from "@/lib/site";
 import type { IconName } from "@/lib/site";
 
 /* ------------------------------------------------------------------ */
@@ -213,7 +213,9 @@ export function Faq({
 
 export function CtaBanner({
   title = "Ready to see how Walumo can support your organisation?",
-  text = "Book a demo and we will show you the right product, implementation path and next step — or message us on WhatsApp and talk to a real person today.",
+  text = hasWhatsapp
+    ? "Book a demo and we will show you the right product, implementation path and next step — or message us on WhatsApp and talk to a real person today."
+    : "Book a demo and we will show you the right product, implementation path and next step — or talk to a real person on our team today.",
   primary = site.primaryCta,
   secondary = site.whatsappCta,
 }: {

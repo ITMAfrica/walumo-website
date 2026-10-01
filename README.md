@@ -41,10 +41,10 @@ bun run dev
 
 These items come from the audit's final QA checklist and still need input from Walumo / ITM:
 
-1. **WhatsApp number** — set `WHATSAPP_NUMBER` in `lib/site.ts`. Until then, WhatsApp buttons open the contact page.
+1. **WhatsApp number** — set `WHATSAPP_NUMBER` in `lib/site.ts`. Until then, WhatsApp buttons read "Talk to our team" and open the contact page, and WhatsApp-only links (header, footer) are hidden.
 2. **Forms** — the demo form, report/lead forms and newsletter do not send anything yet. Connect them to your email or CRM (see the `TODO` comments in `components/pages/forms/` and `components/layout/newsletter-form.tsx`).
-3. **Figures and claims** — "20+ countries", "3 platforms" and "23+ companies running Kazi Pro" come from the blueprint; confirm them with leadership.
-4. **Testimonials** — none are published (the blueprint's draft quote was not verified). Replace the "Customer stories coming soon" blocks once quotes are approved.
+3. **Figures and claims** — ⚠️ the site contains **SAMPLE (fictional) content** so every page looks complete: "4.8K+ employee records", "3x faster leave approvals", the Hacklab figures (120+ / 18 / 48h) and the ITM Holding case study. All of it lives in `lib/content.ts` (search for `SAMPLE`). Replace it with confirmed figures before launch.
+4. **Testimonials** — the three quotes (Grace M., Patrick K., Aline N.) are **SAMPLE quotes**, not real people. Replace them in `testimonials` in `lib/content.ts` with quotes approved in writing; the blocks update automatically.
 5. **Logos** — the logo wall shows ITM Holding group entities only, as recommended by the blueprint.
 6. **Screenshots** — personal data (names, email, phone) was blurred on the Kazi Pro and Talent Pro screenshots. Sales Tracker has no pipeline screenshot yet, so a coded UI illustration is shown; replace it with a real screenshot when available.
 7. **Articles** — the four Insights articles are drafts based on the audit's recommended topics; have them reviewed by the Walumo team.

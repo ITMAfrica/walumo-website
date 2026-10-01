@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { mainNav, site, type NavItem } from "@/lib/site";
+import { hasWhatsapp, mainNav, site, type NavItem } from "@/lib/site";
 import { Logo } from "@/components/ui/logo";
 import { ArrowRight, ChevronDown, Close, FeatureIcon, Menu, Plus } from "@/components/ui/icons";
 import { Button, cn } from "@/components/ui/primitives";
@@ -197,9 +197,11 @@ export function Header() {
         </nav>
 
         <div className="hidden items-center gap-2 lg:flex">
-          <Button href={site.whatsappCta.href} variant="outline" size="sm" className="border-ink/30">
-            {site.whatsappCta.label}
-          </Button>
+          {hasWhatsapp && (
+            <Button href={site.whatsappCta.href} variant="outline" size="sm" className="border-ink/30">
+              {site.whatsappCta.label}
+            </Button>
+          )}
           <Button href={site.primaryCta.href} size="sm">
             {site.primaryCta.label}
           </Button>
@@ -266,9 +268,11 @@ export function Header() {
           <Button href={site.primaryCta.href} arrow>
             {site.primaryCta.label}
           </Button>
-          <Button href={site.whatsappCta.href} variant="outline">
-            {site.whatsappCta.label}
-          </Button>
+          {hasWhatsapp && (
+            <Button href={site.whatsappCta.href} variant="outline">
+              {site.whatsappCta.label}
+            </Button>
+          )}
         </div>
       </div>
     </header>
