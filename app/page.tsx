@@ -1,6 +1,5 @@
-import Link from "next/link";
 import { Hero } from "@/components/sections/hero";
-import { StoriesComingSoon, TrustBadge, TrustedStrip } from "@/components/sections/social-proof";
+import { TrustBadge, TrustedStrip } from "@/components/sections/social-proof";
 import { CtaBanner, FeatureGrid, PillarCard, StatsBand } from "@/components/sections/blocks";
 import { PeopleBento, Timeline } from "@/components/sections/gallery";
 import { InsightsGrid } from "@/components/sections/collections";
@@ -220,20 +219,7 @@ export default function HomePage() {
         </Container>
       </Section>
 
-      {/* Customer stories — only approved quotes will be published */}
-      <Section tone="surface" className="py-16 sm:py-20">
-        <Container size="narrow">
-          <StoriesComingSoon />
-          <p className="mt-6 text-center text-[15px] text-muted">
-            Want to build with us?{" "}
-            <Link href="/contact" className="font-bold text-accent-strong underline underline-offset-4">
-              Partner with Walumo
-            </Link>
-          </p>
-        </Container>
-      </Section>
-
-      <InsightsGrid />
+      <InsightsGrid tone="surface" />
 
       <CtaBanner title="Ready to run your business on software built for Africa?" />
     </>

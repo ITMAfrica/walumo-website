@@ -4,7 +4,6 @@ import {
   Button,
   CheckList,
   Container,
-  CtaPair,
   Eyebrow,
   Section,
   SectionHeading,

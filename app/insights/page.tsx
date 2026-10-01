@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { NewsletterForm } from "@/components/layout/newsletter-form";
 import { ArticleCard, EventCard, ReportCard } from "@/components/sections/collections";
-import { StoriesComingSoon } from "@/components/sections/social-proof";
 import { Container, Eyebrow, Section, SectionHeading } from "@/components/ui/primitives";
 import { Reveal } from "@/components/ui/reveal";
 import { articles, events, reports } from "@/lib/content";
@@ -104,13 +103,6 @@ export default function InsightsPage() {
               </li>
             ))}
           </ul>
-        </Container>
-      </Section>
-
-      <Section tone="surface" id="case-studies" className="scroll-mt-20">
-        <Container size="narrow">
-          <SectionHeading eyebrow="Case studies" title="Results from teams running Walumo" />
-          <StoriesComingSoon className="mt-10" />
         </Container>
       </Section>
 
