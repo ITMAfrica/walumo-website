@@ -27,21 +27,10 @@
 
   --shadow-card: 0 1px 2px rgb(6 20 51 / 0.05), 0 12px 32px -12px rgb(6 20 51 / 0.14);
   --shadow-float: 0 2px 4px rgb(6 20 51 / 0.07), 0 24px 48px -16px rgb(6 20 51 / 0.25);
-  --shadow-lift: 0 4px 8px rgb(6 20 51 / 0.06), 0 32px 64px -20px rgb(6 20 51 / 0.32);
-  --shadow-glow: 0 0 0 1px rgb(37 112 200 / 0.12), 0 18px 50px -12px rgb(37 112 200 / 0.45);
-
-  --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
+  --shadow-lift: 0 4px 8px rgb(6 20 51 / 0.06), 0 28px 56px -20px rgb(6 20 51 / 0.28);
 
   --animate-marquee: marquee 40s linear infinite;
-  --animate-marquee-slow: marquee 70s linear infinite;
-  --animate-marquee-reverse: marquee 70s linear infinite reverse;
   --animate-fade-up: fade-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
-  --animate-word-in: word-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
-  --animate-float: float 6s ease-in-out infinite;
-  --animate-float-slow: float 9s ease-in-out infinite;
-  --animate-aurora: aurora 18s ease-in-out infinite alternate;
-  --animate-pulse-ring: pulse-ring 2.4s cubic-bezier(0.22, 1, 0.36, 1) infinite;
-  --animate-gradient-pan: gradient-pan 6s ease-in-out infinite alternate;
 
   @keyframes marquee {
     from {
@@ -60,63 +49,6 @@
     to {
       opacity: 1;
       transform: translateY(0);
-    }
-  }
-
-  /* Hero title: each word rises out of a soft blur. */
-  @keyframes word-in {
-    from {
-      opacity: 0;
-      transform: translateY(0.45em);
-      filter: blur(10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-      filter: blur(0);
-    }
-  }
-
-  @keyframes float {
-    0%,
-    100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-12px);
-    }
-  }
-
-  /* Slow drift of the blurred colour blobs behind heroes. */
-  @keyframes aurora {
-    0% {
-      transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
-    }
-    50% {
-      transform: translate3d(6%, -4%, 0) scale(1.12) rotate(12deg);
-    }
-    100% {
-      transform: translate3d(-5%, 5%, 0) scale(0.95) rotate(-8deg);
-    }
-  }
-
-  @keyframes pulse-ring {
-    0% {
-      transform: scale(1);
-      opacity: 0.55;
-    }
-    100% {
-      transform: scale(2.4);
-      opacity: 0;
-    }
-  }
-
-  @keyframes gradient-pan {
-    from {
-      background-position: 0% 50%;
-    }
-    to {
-      background-position: 100% 50%;
     }
   }
 }
@@ -206,87 +138,6 @@
     font-size: 1.35rem;
     line-height: 1.5;
     color: var(--color-ink);
-  }
-
-  /* Faint blueprint grid that fades out towards the edges (hero backgrounds). */
-  .bg-grid {
-    background-image:
-      linear-gradient(to right, rgb(6 20 51 / 0.06) 1px, transparent 1px),
-      linear-gradient(to bottom, rgb(6 20 51 / 0.06) 1px, transparent 1px);
-    background-size: 56px 56px;
-    mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, #000 30%, transparent 75%);
-  }
-  .bg-grid-dark {
-    background-image:
-      linear-gradient(to right, rgb(255 255 255 / 0.06) 1px, transparent 1px),
-      linear-gradient(to bottom, rgb(255 255 255 / 0.06) 1px, transparent 1px);
-    background-size: 56px 56px;
-    mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, #000 20%, transparent 80%);
-  }
-
-  /* Brand-blue gradient text that slowly pans (hero accents). */
-  .text-shimmer {
-    background-image: linear-gradient(100deg, #1b5fb0 0%, #2570c8 30%, #4aa3dc 50%, #2570c8 70%, #1b5fb0 100%);
-    background-size: 220% 100%;
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
-    animation: var(--animate-gradient-pan);
-  }
-  .text-shimmer-dark {
-    background-image: linear-gradient(100deg, #6bbfe8 0%, #a9dcf5 45%, #6bbfe8 70%, #4aa3dc 100%);
-    background-size: 220% 100%;
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
-    animation: var(--animate-gradient-pan);
-  }
-
-  /*
-   * Cursor spotlight: a soft glow follows the pointer inside the card.
-   * --mx / --my are set by <Spotlight>.
-   */
-  .spotlight {
-    position: relative;
-    isolation: isolate;
-  }
-  .spotlight::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    border-radius: inherit;
-    opacity: 0;
-    transition: opacity 0.4s var(--ease-out-expo);
-    background: radial-gradient(
-      420px circle at var(--mx, 50%) var(--my, 50%),
-      rgb(107 191 232 / 0.22),
-      transparent 45%
-    );
-    pointer-events: none;
-  }
-  .spotlight:hover::before {
-    opacity: 1;
-  }
-
-  /* Light sweep across a button on hover. */
-  .btn-shine {
-    position: relative;
-    overflow: hidden;
-    isolation: isolate;
-  }
-  .btn-shine::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    background: linear-gradient(110deg, transparent 30%, rgb(255 255 255 / 0.28) 50%, transparent 70%);
-    transform: translateX(-120%);
-    transition: transform 0.75s var(--ease-out-expo);
-    pointer-events: none;
-  }
-  .btn-shine:hover::after {
-    transform: translateX(120%);
   }
 }
 

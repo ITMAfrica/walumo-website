@@ -5,15 +5,15 @@ import type { IconName } from "@/lib/site";
 
 /**
  * Image slots. Pass `src` (a file in /public/images) to show a real photo;
- * without it, a tinted abstract placeholder is rendered instead.
+ * without it, a plain tinted panel is rendered instead.
  */
 
 const tones = {
-  mint: "from-[#e3efe9] via-[#edf4f0] to-[#d6e8de]",
-  sand: "from-[#f3ece2] via-[#f8f3ec] to-[#ebe0d1]",
-  sky: "from-[#e3ebf4] via-[#eef3f8] to-[#d5e1ee]",
-  ink: "from-[#1c2c34] via-[#16242b] to-[#0f1a20]",
-  lilac: "from-[#ece6f2] via-[#f4f0f7] to-[#e0d6ea]",
+  mint: "from-[#e5effa] to-[#d9e6f5]",
+  sand: "from-[#f6f1ea] to-[#ece3d6]",
+  sky: "from-[#edf3fa] to-[#dde7f3]",
+  ink: "from-[#0b1d3d] to-[#061433]",
+  lilac: "from-[#ece6f2] to-[#e0d6ea]",
 } as const;
 
 export type Tone = keyof typeof tones;
@@ -41,7 +41,6 @@ export function PhotoPlaceholder({
   /** Darken the bottom of the photo so overlaid text stays readable. */
   overlay?: boolean;
 }) {
-  const dark = tone === "ink";
   // Keep `relative` as the default positioning unless the caller positions the element itself.
   const positioned = /(^|\s)(absolute|fixed|sticky)(\s|$)/.test(className ?? "");
 
@@ -54,7 +53,7 @@ export function PhotoPlaceholder({
           fill
           sizes={sizes}
           preload={priority}
-          className="object-cover transition-[scale] duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.06]"
+          className="object-cover transition-[scale] duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]"
         />
         {overlay && <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/25 to-transparent" aria-hidden="true" />}
         {children && <div className="relative h-full w-full">{children}</div>}
@@ -68,58 +67,7 @@ export function PhotoPlaceholder({
       role={label ? "img" : undefined}
       aria-label={label}
     >
-      {/* soft abstract shapes */}
-      <div
-        className={cn(
-          "absolute -right-16 -top-16 size-72 rounded-full blur-2xl",
-          dark ? "bg-accent/15" : "bg-white/60",
-        )}
-      />
-      <div
-        className={cn(
-          "absolute -bottom-24 -left-10 size-80 rounded-full blur-3xl",
-          dark ? "bg-[#2e4a57]/60" : "bg-accent/10",
-        )}
-      />
-      <svg className={cn("absolute inset-0 h-full w-full", dark ? "opacity-[0.08]" : "opacity-[0.35]")} aria-hidden="true">
-        <defs>
-          <pattern id={`dots-${tone}`} width="18" height="18" patternUnits="userSpaceOnUse">
-            <circle cx="1.5" cy="1.5" r="1.1" fill={dark ? "#fff" : "#9fb3aa"} />
-          </pattern>
-        </defs>
-        <rect width="100%" height="100%" fill={`url(#dots-${tone})`} />
-      </svg>
       {children && <div className="relative h-full w-full">{children}</div>}
-    </div>
-  );
-}
-
-/**
- * Slowly drifting, blurred brand-colour blobs over a faint grid.
- * Purely decorative: place inside a `relative overflow-hidden` parent.
- */
-export function Aurora({ dark, className }: { dark?: boolean; className?: string }) {
-  return (
-    <div className={cn("pointer-events-none absolute inset-0 overflow-hidden", className)} aria-hidden="true">
-      <div
-        className={cn(
-          "absolute -left-[10%] -top-[20%] size-[38rem] animate-aurora rounded-full blur-[110px]",
-          dark ? "bg-accent-strong/35" : "bg-accent/30",
-        )}
-      />
-      <div
-        className={cn(
-          "absolute -right-[12%] top-[5%] size-[34rem] animate-aurora rounded-full blur-[120px] [animation-delay:-6s]",
-          dark ? "bg-accent/20" : "bg-accent-strong/20",
-        )}
-      />
-      <div
-        className={cn(
-          "absolute bottom-[-25%] left-[30%] size-[30rem] animate-aurora rounded-full blur-[120px] [animation-delay:-12s]",
-          dark ? "bg-[#3b5bdb]/25" : "bg-[#9cc7f0]/35",
-        )}
-      />
-      <div className={cn("absolute inset-0", dark ? "bg-grid-dark" : "bg-grid")} />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { cn } from "./primitives";
 
 function prefersReducedMotion() {
@@ -30,12 +30,9 @@ function useInView<T extends Element>(rootMargin = "0px 0px -8% 0px") {
 }
 
 const hidden = {
-  up: "translate-y-8 opacity-0",
-  down: "-translate-y-8 opacity-0",
-  left: "-translate-x-10 opacity-0",
-  right: "translate-x-10 opacity-0",
-  scale: "scale-[0.94] opacity-0",
-  blur: "translate-y-4 opacity-0 blur-md",
+  up: "translate-y-4 opacity-0",
+  left: "-translate-x-6 opacity-0",
+  right: "translate-x-6 opacity-0",
 } as const;
 
 /** Animates children in once they enter the viewport. */
@@ -59,8 +56,8 @@ export function Reveal({
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ref={ref as any}
       className={cn(
-        // Tailwind v4 uses the individual `translate` / `scale` properties, not `transform`.
-        "transition-[opacity,translate,scale,filter] duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)]",
+        // Tailwind v4 uses the individual `translate` property, not `transform`.
+        "transition-[opacity,translate] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]",
         visible ? "opacity-100" : hidden[variant],
         className,
       )}
@@ -68,105 +65,6 @@ export function Reveal({
     >
       {children}
     </Tag>
-  );
-}
-
-/**
- * Splits a heading into words that rise out of a blur one after another.
- * Server-rendered text stays in the DOM, so it remains readable and indexable.
- */
-export function SplitWords({
-  text,
-  className,
-  wordClassName,
-  delay = 0,
-  step = 70,
-}: {
-  text: string;
-  className?: string;
-  wordClassName?: string;
-  delay?: number;
-  step?: number;
-}) {
-  const words = text.split(" ");
-  return (
-    <span className={className}>
-      {words.map((w, i) => (
-        // The space must sit outside the inline-block, where it would be trimmed.
-        <Fragment key={i}>
-          <span
-            className={cn("inline-block animate-word-in pb-[0.12em] -mb-[0.12em]", wordClassName)}
-            style={{ animationDelay: `${delay + i * step}ms` }}
-          >
-            {w}
-          </span>
-          {i < words.length - 1 ? " " : null}
-        </Fragment>
-      ))}
-    </span>
-  );
-}
-
-/** Card wrapper whose glow follows the pointer (see `.spotlight` in globals.css). */
-export function Spotlight({ children, className }: { children: ReactNode; className?: string }) {
-  const ref = useRef<HTMLDivElement>(null);
-  return (
-    <div
-      ref={ref}
-      className={cn("spotlight", className)}
-      onPointerMove={(e) => {
-        const el = ref.current;
-        if (!el) return;
-        const r = el.getBoundingClientRect();
-        el.style.setProperty("--mx", `${e.clientX - r.left}px`);
-        el.style.setProperty("--my", `${e.clientY - r.top}px`);
-      }}
-    >
-      {children}
-    </div>
-  );
-}
-
-/** Tilts its content in 3D towards the pointer. Disabled for touch and reduced motion. */
-export function Tilt({
-  children,
-  className,
-  max = 6,
-  scale = 1.01,
-}: {
-  children: ReactNode;
-  className?: string;
-  max?: number;
-  scale?: number;
-}) {
-  const ref = useRef<HTMLDivElement>(null);
-  const frame = useRef(0);
-
-  const reset = () => {
-    const el = ref.current;
-    if (el) el.style.transform = "perspective(1200px) rotateX(0deg) rotateY(0deg) scale(1)";
-  };
-
-  return (
-    <div
-      ref={ref}
-      className={cn("transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform", className)}
-      onPointerMove={(e) => {
-        if (e.pointerType !== "mouse" || prefersReducedMotion()) return;
-        const el = ref.current;
-        if (!el) return;
-        const r = el.getBoundingClientRect();
-        const x = (e.clientX - r.left) / r.width - 0.5;
-        const y = (e.clientY - r.top) / r.height - 0.5;
-        cancelAnimationFrame(frame.current);
-        frame.current = requestAnimationFrame(() => {
-          el.style.transform = `perspective(1200px) rotateX(${(-y * max).toFixed(2)}deg) rotateY(${(x * max).toFixed(2)}deg) scale(${scale})`;
-        });
-      }}
-      onPointerLeave={reset}
-    >
-      {children}
-    </div>
   );
 }
 
@@ -216,94 +114,6 @@ export function Parallax({
 }
 
 /**
- * Starts tilted back in 3D and straightens up as the user scrolls,
- * used for the product screenshot under the home hero.
- */
-export function ScrollRise({ children, className }: { children: ReactNode; className?: string }) {
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    if (prefersReducedMotion()) {
-      el.style.transform = "none";
-      return;
-    }
-    let frame = 0;
-    const update = () => {
-      const r = el.getBoundingClientRect();
-      const vh = window.innerHeight;
-      // 0 while the top sits at the bottom of the viewport, 1 once it reaches 30% from the top.
-      const p = Math.min(1, Math.max(0, (vh - r.top) / (vh * 0.7)));
-      const angle = 18 * (1 - p);
-      const s = 0.92 + 0.08 * p;
-      el.style.transform = `perspective(1400px) rotateX(${angle.toFixed(2)}deg) scale(${s.toFixed(3)})`;
-    };
-    const onScroll = () => {
-      cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(update);
-    };
-    update();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    return () => {
-      cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-    };
-  }, []);
-
-  return (
-    <div
-      ref={ref}
-      className={cn("origin-top will-change-transform", className)}
-      style={{ transform: "perspective(1400px) rotateX(18deg) scale(0.92)" } as CSSProperties}
-    >
-      {children}
-    </div>
-  );
-}
-
-/** Thin brand-coloured bar at the very top showing how far the page has been read. */
-export function ScrollProgress({ className }: { className?: string }) {
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    let frame = 0;
-    const update = () => {
-      const el = ref.current;
-      if (!el) return;
-      const max = document.documentElement.scrollHeight - window.innerHeight;
-      el.style.transform = `scaleX(${max > 0 ? Math.min(1, window.scrollY / max) : 0})`;
-    };
-    const onScroll = () => {
-      cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(update);
-    };
-    update();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    return () => {
-      cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-    };
-  }, []);
-
-  return (
-    <div
-      ref={ref}
-      aria-hidden="true"
-      className={cn(
-        "pointer-events-none h-[2px] origin-left bg-gradient-to-r from-accent-strong via-accent to-accent-strong",
-        className,
-      )}
-      style={{ transform: "scaleX(0)" }}
-    />
-  );
-}
-
-/**
  * Vertical line that draws itself as the section scrolls past
  * (used to connect the numbered delivery steps).
  */
@@ -344,7 +154,7 @@ export function ScrollLine({ className }: { className?: string }) {
     <div
       ref={ref}
       aria-hidden="true"
-      className={cn("h-full w-full origin-top bg-gradient-to-b from-accent-strong to-accent", className)}
+      className={cn("h-full w-full origin-top bg-accent-strong", className)}
       style={{ transform: "scaleY(0)" }}
     />
   );

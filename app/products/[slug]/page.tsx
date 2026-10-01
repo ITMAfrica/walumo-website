@@ -5,8 +5,8 @@ import { TrustBadge, TrustedStrip } from "@/components/sections/social-proof";
 import { CtaBanner, Faq, FeatureGrid, ProductLinks, Steps } from "@/components/sections/blocks";
 import { Button, Container, Eyebrow, Section, SectionHeading } from "@/components/ui/primitives";
 import { FeatureIcon } from "@/components/ui/icons";
-import { Reveal, ScrollRise, SplitWords, Spotlight } from "@/components/ui/reveal";
-import { Aurora, PhotoPlaceholder } from "@/components/ui/visuals";
+import { Reveal } from "@/components/ui/reveal";
+import { PhotoPlaceholder } from "@/components/ui/visuals";
 import { BrowserFrame, KaziMiniMock, SalesPipelineMock, TalentMiniMock } from "@/components/ui/product-mocks";
 import { deliverySteps, products, solutions } from "@/lib/content";
 import { site } from "@/lib/site";
@@ -52,9 +52,8 @@ export default async function ProductPage({ params }: PageProps<"/products/[slug
   return (
     <>
       {/* Hero */}
-      <section className="relative isolate overflow-hidden bg-gradient-to-b from-white via-white to-surface">
-        <Aurora />
-        <Container className="relative pb-16 pt-14 text-center sm:pt-20">
+      <section className="bg-gradient-to-b from-white via-white to-surface">
+        <Container className="pb-16 pt-14 text-center sm:pt-20">
           <nav aria-label="Breadcrumb" className="text-[13px] text-muted">
             <Link href="/products" className="hover:text-ink">
               Products
@@ -70,15 +69,8 @@ export default async function ProductPage({ params }: PageProps<"/products/[slug
           <p className="mt-8 text-[13px] font-bold uppercase tracking-[0.12em] text-accent-strong">
             {product.name} · {product.category}
           </p>
-          <h1 className="mx-auto mt-4 max-w-4xl font-serif text-[2.5rem] leading-[1.1] tracking-[-0.02em] text-ink sm:text-6xl">
-            <SplitWords text={product.headline} />{" "}
-            <em className="italic">
-              <SplitWords
-                text={product.accent}
-                delay={product.headline.split(" ").length * 70}
-                wordClassName="text-shimmer pr-[0.06em]"
-              />
-            </em>
+          <h1 className="mx-auto mt-4 max-w-4xl animate-fade-up font-serif text-[2.5rem] leading-[1.1] tracking-[-0.02em] text-ink sm:text-6xl">
+            {product.headline} <em className="italic text-accent-strong">{product.accent}</em>
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-base leading-7 text-muted sm:text-lg">{product.body}</p>
           <div className="mt-9 flex flex-wrap justify-center gap-3">
@@ -90,19 +82,13 @@ export default async function ProductPage({ params }: PageProps<"/products/[slug
             </Button>
           </div>
         </Container>
-        <Container className="relative pb-20">
-          <div className="relative mx-auto max-w-5xl">
-            <div
-              className="absolute inset-x-[6%] -top-8 bottom-[12%] rounded-[3rem] bg-gradient-to-b from-accent/55 via-accent-strong/25 to-transparent blur-3xl"
-              aria-hidden="true"
-            />
-            <ScrollRise>
-              {product.screenshot ? (
-                <BrowserFrame src={product.screenshot} alt={`${product.name} dashboard`} url={`app.walumo — ${product.name}`} priority />
-              ) : (
-                <SalesPipelineMock />
-              )}
-            </ScrollRise>
+        <Container className="pb-16">
+          <div className="mx-auto max-w-5xl animate-fade-up [animation-delay:200ms]">
+            {product.screenshot ? (
+              <BrowserFrame src={product.screenshot} alt={`${product.name} dashboard`} url={`app.walumo — ${product.name}`} priority />
+            ) : (
+              <SalesPipelineMock />
+            )}
           </div>
         </Container>
       </section>
@@ -116,13 +102,13 @@ export default async function ProductPage({ params }: PageProps<"/products/[slug
           <ul className="mt-14 grid gap-5 md:grid-cols-3">
             {product.pains.map((p, i) => (
               <Reveal as="li" key={p.title} delay={i * 70} className="h-full">
-                <Spotlight className="group h-full rounded-[var(--radius-card)] bg-white p-7 shadow-card ring-1 ring-ink/[0.04] transition-[translate,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1.5 hover:shadow-lift">
-                  <span className="flex size-12 items-center justify-center rounded-2xl bg-[#fdecec] text-[#b3412e] transition-[scale,rotate] duration-500 group-hover:-rotate-6 group-hover:scale-110">
-                    <FeatureIcon name="target" size={21} />
+                <div className="h-full rounded-[var(--radius-card)] bg-white p-7 shadow-card transition-[translate,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-lift">
+                  <span className="flex size-11 items-center justify-center rounded-xl bg-[#fdecec] text-[#b3412e]">
+                    <FeatureIcon name="target" size={20} />
                   </span>
                   <h3 className="mt-6 text-lg font-bold text-ink">{p.title}</h3>
                   <p className="mt-2 text-[15px] leading-6 text-muted">{p.text}</p>
-                </Spotlight>
+                </div>
               </Reveal>
             ))}
           </ul>

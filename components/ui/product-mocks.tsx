@@ -22,13 +22,8 @@ export function BrowserFrame({
   priority?: boolean;
 }) {
   return (
-    <figure
-      className={cn(
-        "overflow-hidden rounded-2xl border border-white/70 bg-white shadow-lift ring-1 ring-ink/[0.06]",
-        className,
-      )}
-    >
-      <div className="flex items-center gap-2 border-b border-line bg-surface/90 px-4 py-2.5 backdrop-blur" aria-hidden="true">
+    <figure className={cn("overflow-hidden rounded-2xl border border-line bg-white shadow-float", className)}>
+      <div className="flex items-center gap-2 border-b border-line bg-surface px-4 py-2.5" aria-hidden="true">
         <span className="size-2.5 rounded-full bg-[#ff5f57]" />
         <span className="size-2.5 rounded-full bg-[#febc2e]" />
         <span className="size-2.5 rounded-full bg-[#28c840]" />
@@ -66,7 +61,7 @@ export function ScreenshotPeek({
   return (
     <div
       className={cn(
-        "absolute left-8 top-10 w-[170%] overflow-hidden rounded-tl-2xl border border-white/80 bg-white shadow-lift ring-1 ring-ink/[0.06] transition-[translate] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-x-4 group-hover:-translate-y-2 sm:left-12 sm:top-12 lg:w-[150%]",
+        "absolute left-8 top-10 w-[170%] overflow-hidden rounded-tl-2xl border border-line bg-white shadow-float transition-[translate] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-x-4 group-hover:-translate-y-2 sm:left-12 sm:top-12 lg:w-[150%]",
         className,
       )}
     >

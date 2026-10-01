@@ -42,12 +42,11 @@ export function Eyebrow({ children, className, dark }: { children: ReactNode; cl
   return (
     <span
       className={cn(
-        "inline-flex w-fit items-center gap-2 rounded-full border px-3 py-1 text-[11px] font-bold uppercase tracking-[0.12em]",
-        dark ? "border-white/15 bg-white/[0.06] text-white/80" : "border-accent-strong/15 bg-accent-soft/70 text-accent-strong",
+        "inline-flex w-fit items-center rounded-md px-2 py-1 text-[11px] font-bold uppercase tracking-[0.1em]",
+        dark ? "bg-white/10 text-white/80" : "bg-accent-soft text-accent-strong",
         className,
       )}
     >
-      <span className={cn("size-1.5 rounded-full", dark ? "bg-accent" : "bg-accent-strong")} aria-hidden="true" />
       {children}
     </span>
   );
@@ -112,10 +111,10 @@ type ButtonProps = {
 
 export function Button({ href, children, variant = "primary", size = "md", arrow = false, className }: ButtonProps) {
   const variants = {
-    primary: "btn-shine bg-ink text-white hover:-translate-y-0.5 hover:bg-ink-soft hover:shadow-glow",
-    outline: "border border-ink/80 text-ink hover:-translate-y-0.5 hover:bg-ink hover:text-white",
-    light: "btn-shine bg-white text-ink hover:-translate-y-0.5 hover:shadow-[0_18px_40px_-12px_rgb(107_191_232/0.55)]",
-    ghost: "border border-white/30 text-white backdrop-blur-sm hover:-translate-y-0.5 hover:bg-white/10",
+    primary: "bg-ink text-white hover:bg-accent-strong",
+    outline: "border border-ink/80 text-ink hover:bg-ink hover:text-white",
+    light: "bg-white text-ink hover:bg-surface",
+    ghost: "border border-white/30 text-white hover:bg-white/10",
   };
   const sizes = {
     sm: "h-9 px-4 text-sm",
@@ -126,7 +125,7 @@ export function Button({ href, children, variant = "primary", size = "md", arrow
     <Link
       href={href}
       className={cn(
-        "group inline-flex items-center justify-center gap-2 rounded-full font-medium transition-[color,background-color,border-color,translate,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] active:translate-y-0",
+        "group inline-flex items-center justify-center gap-2 rounded-full font-medium transition-colors duration-200",
         variants[variant],
         sizes[size],
         className,
@@ -137,8 +136,8 @@ export function Button({ href, children, variant = "primary", size = "md", arrow
         <ArrowRight
           size={16}
           className={cn(
-            "transition-[translate] duration-300 group-hover:translate-x-1",
-            variant === "primary" ? "text-accent" : "",
+            "transition-transform duration-200 group-hover:translate-x-0.5",
+            variant === "primary" ? "text-accent group-hover:text-white" : "",
           )}
         />
       )}
