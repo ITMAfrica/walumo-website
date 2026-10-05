@@ -1,11 +1,12 @@
 import { Hero } from "@/components/sections/hero";
 import { ProofSplit, TrustBadge, TrustedStrip } from "@/components/sections/social-proof";
 import { CtaBanner, Steps } from "@/components/sections/blocks";
+import { PeopleBento } from "@/components/sections/gallery";
 import { InsightsGrid } from "@/components/sections/collections";
 import { HacklabSection } from "@/components/sections/community";
 import { Container, CtaPair, Section, SectionHeading, TextLink } from "@/components/ui/primitives";
 import { FeatureIcon } from "@/components/ui/icons";
-import { Reveal, ScrollStatement } from "@/components/ui/reveal";
+import { Reveal, ScrollStatement, Spotlight } from "@/components/ui/reveal";
 import { PhotoPlaceholder } from "@/components/ui/visuals";
 import { KaziMiniMock, SalesPipelineMock, TalentMiniMock } from "@/components/ui/product-mocks";
 import { HeroFollowUps, HeroLeaveCard } from "@/components/sections/interactive-hero";
@@ -59,14 +60,14 @@ export default function HomePage() {
         <Container>
           <ul className="mt-16 grid gap-5 md:grid-cols-3">
             {painPoints.map((p, i) => (
-              <Reveal as="li" key={p.title} delay={i * 80}>
-                <div className="h-full rounded-[var(--radius-card)] bg-white p-7 shadow-card transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-float">
-                  <span className="flex size-11 items-center justify-center rounded-xl bg-[#fdecec] text-[#b3412e]">
-                    <FeatureIcon name={p.icon} size={20} />
+              <Reveal as="li" key={p.title} delay={i * 90} className="h-full">
+                <Spotlight className="group h-full rounded-[var(--radius-card)] bg-white p-7 shadow-card ring-1 ring-ink/[0.04] transition-[translate,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1.5 hover:shadow-lift">
+                  <span className="flex size-12 items-center justify-center rounded-2xl bg-[#fdecec] text-[#b3412e] transition-[scale,rotate] duration-500 group-hover:-rotate-6 group-hover:scale-110">
+                    <FeatureIcon name={p.icon} size={21} />
                   </span>
                   <h3 className="mt-6 text-lg font-bold text-ink">{p.title}</h3>
                   <p className="mt-2 text-[15px] leading-6 text-muted">{p.text}</p>
-                </div>
+                </Spotlight>
               </Reveal>
             ))}
           </ul>
@@ -142,6 +143,9 @@ export default function HomePage() {
           <CtaPair className="mt-12" primary={site.primaryCta} secondary={{ label: "Explore the full ecosystem", href: "/products" }} />
         </Container>
       </Section>
+
+      {/* Real people and places */}
+      <PeopleBento />
 
       {/* Proof */}
       <Section tone="fade">

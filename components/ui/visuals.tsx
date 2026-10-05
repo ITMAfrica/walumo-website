@@ -48,7 +48,14 @@ export function PhotoPlaceholder({
   if (src) {
     return (
       <div className={cn(!positioned && "relative", "overflow-hidden bg-surface-2", className)}>
-        <Image src={src} alt={alt || label || ""} fill sizes={sizes} priority={priority} className="object-cover" />
+        <Image
+          src={src}
+          alt={alt || label || ""}
+          fill
+          sizes={sizes}
+          preload={priority}
+          className="object-cover transition-[scale] duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.06]"
+        />
         {overlay && <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/25 to-transparent" aria-hidden="true" />}
         {children && <div className="relative h-full w-full">{children}</div>}
       </div>
@@ -83,6 +90,36 @@ export function PhotoPlaceholder({
         <rect width="100%" height="100%" fill={`url(#dots-${tone})`} />
       </svg>
       {children && <div className="relative h-full w-full">{children}</div>}
+    </div>
+  );
+}
+
+/**
+ * Slowly drifting, blurred brand-colour blobs over a faint grid.
+ * Purely decorative: place inside a `relative overflow-hidden` parent.
+ */
+export function Aurora({ dark, className }: { dark?: boolean; className?: string }) {
+  return (
+    <div className={cn("pointer-events-none absolute inset-0 overflow-hidden", className)} aria-hidden="true">
+      <div
+        className={cn(
+          "absolute -left-[10%] -top-[20%] size-[38rem] animate-aurora rounded-full blur-[110px]",
+          dark ? "bg-accent-strong/35" : "bg-accent/30",
+        )}
+      />
+      <div
+        className={cn(
+          "absolute -right-[12%] top-[5%] size-[34rem] animate-aurora rounded-full blur-[120px] [animation-delay:-6s]",
+          dark ? "bg-accent/20" : "bg-accent-strong/20",
+        )}
+      />
+      <div
+        className={cn(
+          "absolute bottom-[-25%] left-[30%] size-[30rem] animate-aurora rounded-full blur-[120px] [animation-delay:-12s]",
+          dark ? "bg-[#3b5bdb]/25" : "bg-[#9cc7f0]/35",
+        )}
+      />
+      <div className={cn("absolute inset-0", dark ? "bg-grid-dark" : "bg-grid")} />
     </div>
   );
 }
