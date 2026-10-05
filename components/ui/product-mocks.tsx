@@ -3,6 +3,9 @@ import type { CSSProperties } from "react";
 import { cn } from "./primitives";
 import { FeatureIcon } from "./icons";
 import { LogoMark } from "./logo";
+import { KaziLiveMock } from "./kazi-live-mock";
+import { getLang } from "@/lib/i18n-server";
+import { tr, type Locale } from "@/lib/i18n";
 
 /**
  * Product visuals. Real screenshots are shown in a browser frame; where no
@@ -96,23 +99,41 @@ const deals = {
   Won: [{ name: "Coast Pharma", value: "KES 540K", due: "Closed" }],
 } as const;
 
+const stageLabels = (lang: Locale): Record<string, string> => ({
+  "New lead": tr(lang, "New lead", "Nouveau prospect"),
+  Qualified: tr(lang, "Qualified", "Qualifié"),
+  Proposal: tr(lang, "Proposal", "Proposition"),
+  Won: tr(lang, "Won", "Gagné"),
+});
+
+const dealsFr: Record<string, string> = {
+  "Call today": "Appel aujourd'hui",
+  Tomorrow: "Demain",
+  "Visit Thu": "Visite jeu.",
+  "Follow up": "À relancer",
+  Fri: "Ven.",
+  Closed: "Conclu",
+};
+
 /** Sales Tracker pipeline board (illustrative data). */
-export function SalesPipelineMock({ className, compact }: { className?: string; compact?: boolean }) {
+export async function SalesPipelineMock({ className, compact }: { className?: string; compact?: boolean }) {
+  const lang = await getLang();
+  const stages = stageLabels(lang);
   const columns = Object.entries(deals);
   return (
     <div
       className={cn("sales-pipeline-motion relative isolate w-full rounded-2xl border border-line bg-white p-4 shadow-float", className)}
       role="img"
-      aria-label="Illustration of the Sales Tracker pipeline board"
+      aria-label={tr(lang, "Illustration of the Sales Tracker pipeline board", "Illustration du tableau de pipeline de Sales Tracker")}
     >
       <div className="relative z-10 flex items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <span className="flex size-7 items-center justify-center rounded-lg bg-ink text-accent">
             <FeatureIcon name="chart" size={15} />
           </span>
-          <p className="text-sm font-bold text-ink">Pipeline · This quarter</p>
+          <p className="text-sm font-bold text-ink">{tr(lang, "Pipeline · This quarter", "Pipeline · Ce trimestre")}</p>
         </div>
-        <span className="sales-pipeline-alert rounded-full bg-accent-soft px-2.5 py-1 text-[11px] font-bold text-accent-strong">3 follow-ups due</span>
+        <span className="sales-pipeline-alert rounded-full bg-accent-soft px-2.5 py-1 text-[11px] font-bold text-accent-strong">{tr(lang, "3 follow-ups due", "3 relances à faire")}</span>
       </div>
       <span className="sales-pipeline-signal" aria-hidden="true">
         <span />
@@ -125,7 +146,7 @@ export function SalesPipelineMock({ className, compact }: { className?: string; 
             style={{ "--stage-delay": `${360 + stageIndex * 90}ms` } as CSSProperties}
           >
             <p className="flex items-center justify-between px-1 text-[11px] font-bold uppercase tracking-wide text-muted">
-              {stage}
+              {stages[stage]}
               <span className="tabular-nums text-ink/50">{items.length}</span>
             </p>
             <ul className="mt-2 space-y-2">
@@ -138,7 +159,7 @@ export function SalesPipelineMock({ className, compact }: { className?: string; 
                   <p className="truncate text-[12px] font-bold text-ink">{d.name}</p>
                   <p className="mt-0.5 text-[11px] tabular-nums text-accent-strong">{d.value}</p>
                   <p className={cn("mt-1.5 inline-flex rounded px-1.5 py-0.5 text-[10px]", stage === "Won" ? "bg-[#e3f6ea] text-[#1f7a45]" : "bg-[#fff3dc] text-[#9a6700]")}>
-                    {d.due}
+                    {lang === "fr" ? (dealsFr[d.due] ?? d.due) : d.due}
                   </p>
                 </li>
               ))}
@@ -150,58 +171,24 @@ export function SalesPipelineMock({ className, compact }: { className?: string; 
   );
 }
 
-/** Kazi Pro leave-request card (illustrative data). */
+/** Kazi Pro leave-request card: animated (illustrative data). */
 export function KaziMiniMock({ className }: { className?: string }) {
-  const rows = [
-    { type: "Annual leave", days: "3 days", state: "Approved", ok: true },
-    { type: "Sick leave", days: "1 day", state: "Pending", ok: null },
-    { type: "Remote work", days: "2 days", state: "Approved", ok: true },
-  ];
-  return (
-    <div className={cn("w-full max-w-[340px] rounded-2xl bg-white p-5 shadow-float", className)} role="img" aria-label="Illustration of Kazi Pro leave management">
-      <div className="flex items-center justify-between">
-        <p className="text-sm font-bold text-ink">Leave requests</p>
-        <span className="rounded-full bg-accent-soft px-2 py-0.5 text-[11px] font-bold text-accent-strong">Kazi Pro</span>
-      </div>
-      <div className="mt-4 grid grid-cols-3 gap-2 text-center">
-        {[
-          ["18", "Available"],
-          ["1", "Pending"],
-          ["5", "Taken"],
-        ].map(([v, l]) => (
-          <div key={l} className="rounded-xl bg-surface px-2 py-2.5">
-            <p className="font-serif text-2xl text-ink">{v}</p>
-            <p className="text-[10.5px] text-muted">{l}</p>
-          </div>
-        ))}
-      </div>
-      <ul className="mt-4 space-y-2">
-        {rows.map((r) => (
-          <li key={r.type} className="flex items-center justify-between rounded-xl border border-line px-3 py-2.5">
-            <div>
-              <p className="text-[12.5px] font-bold text-ink">{r.type}</p>
-              <p className="text-[11px] text-muted">{r.days}</p>
-            </div>
-            <span className={cn("rounded-md px-2 py-0.5 text-[10.5px] font-bold", r.ok ? "bg-[#e3f6ea] text-[#1f7a45]" : "bg-[#fff3dc] text-[#9a6700]")}>{r.state}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
+  return <KaziLiveMock className={className} />;
 }
 
 /** Talent Pro pipeline column (illustrative data). */
-export function TalentMiniMock({ className }: { className?: string }) {
+export async function TalentMiniMock({ className }: { className?: string }) {
+  const lang = await getLang();
   const stages = [
-    { name: "Applied", count: 48, width: "100%" },
-    { name: "Screening", count: 21, width: "62%" },
-    { name: "Interview", count: 9, width: "38%" },
-    { name: "Offer", count: 3, width: "18%" },
+    { name: tr(lang, "Applied", "Candidatures"), count: 48, width: "100%" },
+    { name: tr(lang, "Screening", "Présélection"), count: 21, width: "62%" },
+    { name: tr(lang, "Interview", "Entretien"), count: 9, width: "38%" },
+    { name: tr(lang, "Offer", "Offre"), count: 3, width: "18%" },
   ];
   return (
-    <div className={cn("w-full max-w-[340px] rounded-2xl bg-white p-5 shadow-float", className)} role="img" aria-label="Illustration of the Talent Pro hiring funnel">
+    <div className={cn("w-full max-w-[340px] rounded-2xl bg-white p-5 shadow-float", className)} role="img" aria-label={tr(lang, "Illustration of the Talent Pro hiring funnel", "Illustration de l'entonnoir de recrutement de Talent Pro")}>
       <div className="flex items-center justify-between">
-        <p className="text-sm font-bold text-ink">Hiring funnel · Sales rep</p>
+        <p className="text-sm font-bold text-ink">{tr(lang, "Hiring funnel · Sales rep", "Entonnoir de recrutement · Commercial")}</p>
         <span className="rounded-full bg-accent-soft px-2 py-0.5 text-[11px] font-bold text-accent-strong">Talent Pro</span>
       </div>
       <ul className="mt-4 space-y-3">
@@ -219,73 +206,10 @@ export function TalentMiniMock({ className }: { className?: string }) {
       </ul>
       <p className="mt-4 flex items-center gap-2 rounded-xl bg-surface px-3 py-2 text-[11.5px] text-ink-soft">
         <FeatureIcon name="handshake" size={14} className="text-accent-strong" />
-        12 applications received via WhatsApp this week
+        {tr(lang, "12 applications received via WhatsApp this week", "12 candidatures reçues via WhatsApp cette semaine")}
       </p>
     </div>
   );
 }
 
-/** "One login, one design, one source of truth" hub diagram. */
-export function SuiteHub({ className }: { className?: string }) {
-  const nodes = [
-    { name: "Kazi Pro", sub: "People", icon: "users" as const, pos: "left-0 top-1/2 -translate-y-1/2" },
-    { name: "Talent Pro", sub: "Hiring", icon: "search" as const, pos: "left-1/2 top-0 -translate-x-1/2" },
-    { name: "Sales Tracker", sub: "Revenue", icon: "chart" as const, pos: "right-0 top-1/2 -translate-y-1/2" },
-  ];
-  const shared = ["Single sign-on", "Shared profiles", "Common admin & permissions", "Shared reports"];
-  return (
-    <div className={cn("relative mx-auto w-full max-w-3xl", className)}>
-      <div className="relative hidden aspect-[16/9] sm:block">
-        <svg viewBox="0 0 640 360" className="absolute inset-0 h-full w-full" aria-hidden="true">
-          <defs>
-            <linearGradient id="hub-line" x1="0" x2="1">
-              <stop offset="0" stopColor="#2570C8" stopOpacity="0.15" />
-              <stop offset="0.5" stopColor="#2570C8" stopOpacity="0.6" />
-              <stop offset="1" stopColor="#2570C8" stopOpacity="0.15" />
-            </linearGradient>
-          </defs>
-          <path d="M110 190 Q 220 190 320 205" stroke="url(#hub-line)" strokeWidth="2" strokeDasharray="6 6" fill="none" />
-          <path d="M530 190 Q 420 190 320 205" stroke="url(#hub-line)" strokeWidth="2" strokeDasharray="6 6" fill="none" />
-          <path d="M320 70 L 320 150" stroke="url(#hub-line)" strokeWidth="2" strokeDasharray="6 6" fill="none" />
-          <circle cx="320" cy="210" r="92" fill="#e6f0fb" />
-        </svg>
-        <div className="absolute left-1/2 top-[58%] flex -translate-x-1/2 -translate-y-1/2 flex-col items-center text-center">
-          <span className="flex size-16 items-center justify-center rounded-2xl bg-white shadow-float">
-            <LogoMark size={36} />
-          </span>
-          <p className="mt-3 font-serif text-xl text-ink">One source of truth</p>
-          <p className="text-[12.5px] text-muted">One login · one design</p>
-        </div>
-        {nodes.map((n) => (
-          <div key={n.name} className={`absolute w-44 rounded-2xl bg-white p-4 text-center shadow-float ${n.pos}`}>
-            <span className="mx-auto flex size-10 items-center justify-center rounded-xl bg-ink text-accent">
-              <FeatureIcon name={n.icon} size={19} />
-            </span>
-            <p className="mt-2.5 font-bold text-ink">{n.name}</p>
-            <p className="text-[12.5px] text-muted">{n.sub}</p>
-          </div>
-        ))}
-      </div>
-      <ul className="grid gap-3 sm:hidden">
-        {nodes.map((n) => (
-          <li key={n.name} className="flex items-center gap-4 rounded-2xl bg-white p-4 shadow-card">
-            <span className="flex size-10 items-center justify-center rounded-xl bg-ink text-accent">
-              <FeatureIcon name={n.icon} size={19} />
-            </span>
-            <span>
-              <span className="block font-bold text-ink">{n.name}</span>
-              <span className="block text-[13px] text-muted">{n.sub}</span>
-            </span>
-          </li>
-        ))}
-      </ul>
-      <ul className="mt-6 flex flex-wrap justify-center gap-2">
-        {shared.map((s) => (
-          <li key={s} className="rounded-full border border-line bg-white px-3.5 py-1.5 text-[13px] text-ink-soft">
-            {s}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
+export { SuiteHub } from "@/components/sections/suite-hub";

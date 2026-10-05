@@ -4,9 +4,12 @@ import Image from "next/image";
 import { useRef } from "react";
 import { ArrowRight } from "@/components/ui/icons";
 import { Container, cn } from "@/components/ui/primitives";
+import { useLang } from "@/components/ui/locale";
+import { tr } from "@/lib/i18n";
 
 /** Horizontally scrolling photo gallery with previous/next buttons. */
 export function PhotoCarousel({ photos, label }: { photos: { src: string; alt: string }[]; label: string }) {
+  const lang = useLang();
   const track = useRef<HTMLUListElement>(null);
 
   const scroll = (dir: 1 | -1) => {
@@ -34,7 +37,7 @@ export function PhotoCarousel({ photos, label }: { photos: { src: string; alt: s
             key={dir}
             type="button"
             onClick={() => scroll(dir)}
-            aria-label={dir === -1 ? "Previous photos" : "Next photos"}
+            aria-label={dir === -1 ? tr(lang, "Previous photos", "Photos précédentes") : tr(lang, "Next photos", "Photos suivantes")}
             className="flex size-11 items-center justify-center rounded-full border border-line bg-white text-ink transition-colors hover:border-ink hover:bg-ink hover:text-white"
           >
             <ArrowRight size={18} className={cn(dir === -1 && "rotate-180")} />

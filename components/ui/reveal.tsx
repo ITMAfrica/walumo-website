@@ -2,6 +2,7 @@
 
 import { Fragment, useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { cn } from "./primitives";
+import { TYPE_MS, TYPE_PAUSE, TYPE_START } from "@/lib/typewriter";
 
 function prefersReducedMotion() {
   return typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -442,5 +443,60 @@ export function CountUp({ value, className }: { value: string; className?: strin
     <span ref={ref} className={className}>
       {match ? `${match[1]}${display}${match[3]}` : value}
     </span>
+  );
+}
+
+/**
+ * Typewriter headline: types `title`, a short pause, then `accent` (second line, italic blue),
+ * with a blinking caret that stays on at rest. Layout is reserved from the first frame: the whole text
+ * is always in the flow, the not-yet-typed part is just transparent, so lines never re-wrap.
+ */
+export function TypedHeadline({ title, accent }: { title: string; accent?: string }) {
+  const total = title.length + (accent?.length ?? 0);
+  const [n, setN] = useState(0);
+
+  useEffect(() => {
+    if (prefersReducedMotion()) {
+      setN(total);
+      return;
+    }
+    let i = 0;
+    let id = 0;
+    const step = () => {
+      i += 1;
+      setN(i);
+      if (i < total) id = window.setTimeout(step, TYPE_MS + (accent && i === title.length ? TYPE_PAUSE : 0));
+    };
+    id = window.setTimeout(step, TYPE_START);
+    return () => window.clearTimeout(id);
+  }, [title, accent, total]);
+
+  const caret = (
+    <span className="relative inline-block w-0 align-baseline" aria-hidden="true">
+      <span className="demo-caret absolute left-[0.04em] top-[-0.78em] h-[0.84em] w-[3px] rounded-full bg-accent-strong" />
+    </span>
+  );
+  const t = Math.min(n, title.length);
+  const a = Math.max(0, n - title.length);
+
+  return (
+    <>
+      <span className="sr-only">{accent ? `${title} ${accent}` : title}</span>
+      <span aria-hidden="true">
+        {title.slice(0, t)}
+        {n <= title.length && caret}
+        <span className="opacity-0">{title.slice(t)}</span>
+        {accent && (
+          <>
+            <br />
+            <em className="italic text-accent-strong">
+              {accent.slice(0, a)}
+              {n > title.length && caret}
+              <span className="opacity-0">{accent.slice(a)}</span>
+            </em>
+          </>
+        )}
+      </span>
+    </>
   );
 }

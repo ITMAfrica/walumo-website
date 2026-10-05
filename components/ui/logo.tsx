@@ -1,4 +1,8 @@
-import Link from "next/link";
+"use client";
+
+import Link from "@/components/ui/link";
+import { useLang } from "@/components/ui/locale";
+import { tr } from "@/lib/i18n";
 import { useId } from "react";
 import { site } from "@/lib/site";
 import { cn } from "./primitives";
@@ -43,10 +47,11 @@ function Wordmark({ height = 17 }: { height?: number }) {
 }
 
 export function Logo({ className, light }: { className?: string; light?: boolean }) {
+  const lang = useLang();
   return (
     <Link
       href="/"
-      aria-label={`${site.name} — home`}
+      aria-label={`${site.name} — ${tr(lang, "home", "accueil")}`}
       className={cn("inline-flex items-center gap-2.5", light ? "text-white" : "text-navy", className)}
     >
       <LogoMark size={32} />

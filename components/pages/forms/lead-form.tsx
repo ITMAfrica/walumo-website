@@ -1,9 +1,11 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/ui/link";
 import { useState, type FormEvent } from "react";
 import { Check } from "@/components/ui/icons";
 import { cn } from "@/components/ui/primitives";
+import { useLang } from "@/components/ui/locale";
+import { tr } from "@/lib/i18n";
 
 const inputClass =
   "mt-1.5 h-12 w-full rounded-xl border bg-white px-4 text-[15px] text-ink outline-none transition-colors placeholder:text-muted/70 focus:border-ink";
@@ -15,9 +17,9 @@ const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
  * Front-end only — TODO: send submissions to your CRM or email service.
  */
 export function LeadForm({
-  submitLabel = "Submit",
-  successTitle = "Thanks — we've got it.",
-  successText = "A member of the Walumo team will be in touch with you shortly.",
+  submitLabel: submitLabelProp,
+  successTitle: successTitleProp,
+  successText: successTextProp,
   idPrefix = "lead",
 }: {
   submitLabel?: string;
@@ -25,6 +27,11 @@ export function LeadForm({
   successText?: string;
   idPrefix?: string;
 }) {
+  const lang = useLang();
+  const submitLabel = submitLabelProp ?? tr(lang, "Submit", "Envoyer");
+  const successTitle = successTitleProp ?? tr(lang, "Thanks — we've got it.", "Merci, nous avons bien reçu votre demande.");
+  const successText =
+    successTextProp ?? tr(lang, "A member of the Walumo team will be in touch with you shortly.", "Un membre de l'équipe Walumo vous contactera très prochainement.");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [sent, setSent] = useState(false);
 
@@ -32,9 +39,9 @@ export function LeadForm({
     e.preventDefault();
     const data = new FormData(e.currentTarget);
     const next: Record<string, string> = {};
-    if (!String(data.get("name") ?? "").trim()) next.name = "Please enter your full name.";
-    if (!EMAIL.test(String(data.get("email") ?? "").trim())) next.email = "Please enter a valid work email.";
-    if (!String(data.get("company") ?? "").trim()) next.company = "Please enter your company or organisation.";
+    if (!String(data.get("name") ?? "").trim()) next.name = tr(lang, "Please enter your full name.", "Veuillez saisir votre nom complet.");
+    if (!EMAIL.test(String(data.get("email") ?? "").trim())) next.email = tr(lang, "Please enter a valid work email.", "Veuillez saisir une adresse e-mail professionnelle valide.");
+    if (!String(data.get("company") ?? "").trim()) next.company = tr(lang, "Please enter your company or organisation.", "Veuillez saisir le nom de votre entreprise ou organisation.");
     setErrors(next);
     if (Object.keys(next).length) {
       e.currentTarget.querySelector<HTMLElement>("[aria-invalid='true']")?.focus();
@@ -79,9 +86,9 @@ export function LeadForm({
 
   return (
     <form noValidate onSubmit={onSubmit} className="space-y-4">
-      {field("name", "Full name *", "text", "name")}
-      {field("email", "Work email *", "email", "email")}
-      {field("company", "Company / organisation *", "text", "organization")}
+      {field("name", tr(lang, "Full name *", "Nom complet *"), "text", "name")}
+      {field("email", tr(lang, "Work email *", "E-mail professionnel *"), "email", "email")}
+      {field("company", tr(lang, "Company / organisation *", "Entreprise / organisation *"), "text", "organization")}
       <button
         type="submit"
         className="h-12 w-full rounded-full bg-ink text-[15px] font-bold text-white transition-colors hover:bg-ink-soft"
@@ -89,9 +96,9 @@ export function LeadForm({
         {submitLabel}
       </button>
       <p className="text-center text-[12.5px] leading-5 text-muted">
-        We use your details only to respond to your enquiry.{" "}
+        {tr(lang, "We use your details only to respond to your enquiry.", "Nous utilisons vos informations uniquement pour répondre à votre demande.")}{" "}
         <Link href="/privacy-policy" className="underline underline-offset-2 hover:text-ink">
-          Privacy policy
+          {tr(lang, "Privacy policy", "Politique de confidentialité")}
         </Link>
       </p>
     </form>

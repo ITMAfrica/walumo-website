@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { cn } from "@/components/ui/primitives";
+import { useLang } from "@/components/ui/locale";
+import { tr } from "@/lib/i18n";
 
 /**
  * Hero product cards visitors can play with (illustrative data):
@@ -11,11 +13,27 @@ import { cn } from "@/components/ui/primitives";
 type LeaveState = "Approved" | "Pending" | "Declined";
 
 export function HeroLeaveCard({ className }: { className?: string }) {
+  const lang = useLang();
   const [rows, setRows] = useState<{ type: string; days: string; state: LeaveState }[]>([
     { type: "Annual leave", days: "3 days", state: "Approved" },
     { type: "Sick leave", days: "1 day", state: "Pending" },
     { type: "Remote work", days: "2 days", state: "Approved" },
   ]);
+  const typeLabel: Record<string, string> = {
+    "Annual leave": tr(lang, "Annual leave", "Congé annuel"),
+    "Sick leave": tr(lang, "Sick leave", "Congé maladie"),
+    "Remote work": tr(lang, "Remote work", "Télétravail"),
+  };
+  const daysLabel: Record<string, string> = {
+    "3 days": tr(lang, "3 days", "3 jours"),
+    "1 day": tr(lang, "1 day", "1 jour"),
+    "2 days": tr(lang, "2 days", "2 jours"),
+  };
+  const stateLabel: Record<LeaveState, string> = {
+    Approved: tr(lang, "Approved", "Approuvé"),
+    Pending: tr(lang, "Pending", "En attente"),
+    Declined: tr(lang, "Declined", "Refusé"),
+  };
   const pending = rows.filter((r) => r.state === "Pending").length;
   // Approving the 1-day sick leave moves one day from "Available" to "Taken".
   const approvedNow = rows[1].state === "Approved" ? 1 : 0;
@@ -29,14 +47,14 @@ export function HeroLeaveCard({ className }: { className?: string }) {
   return (
     <div className={cn("w-full max-w-[320px] rounded-2xl bg-white p-5 text-left shadow-float", className)}>
       <div className="flex items-center justify-between">
-        <p className="text-sm font-bold text-ink">Leave requests</p>
+        <p className="text-sm font-bold text-ink">{tr(lang, "Leave requests", "Demandes de congé")}</p>
         <span className="rounded-full bg-accent-soft px-2 py-0.5 text-[11px] font-bold text-accent-strong">Kazi Pro</span>
       </div>
       <div className="mt-4 grid grid-cols-3 gap-2 text-center">
         {[
-          [available, "Available"],
-          [pending, "Pending"],
-          [taken, "Taken"],
+          [available, tr(lang, "Available", "Disponibles")],
+          [pending, tr(lang, "Pending", "En attente")],
+          [taken, tr(lang, "Taken", "Pris")],
         ].map(([v, l]) => (
           <div key={l} className="rounded-xl bg-surface px-2 py-2.5">
             <p className="font-serif text-2xl text-ink tabular-nums transition-all">{v}</p>
@@ -55,8 +73,8 @@ export function HeroLeaveCard({ className }: { className?: string }) {
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[12.5px] font-bold text-ink">{r.type}</p>
-                <p className="text-[11px] text-muted">{r.days}</p>
+                <p className="text-[12.5px] font-bold text-ink">{typeLabel[r.type]}</p>
+                <p className="text-[11px] text-muted">{daysLabel[r.days]}</p>
               </div>
               <span
                 className={cn(
@@ -66,7 +84,7 @@ export function HeroLeaveCard({ className }: { className?: string }) {
                   r.state === "Declined" && "bg-[#fdecec] text-[#b3412e]",
                 )}
               >
-                {r.state}
+                {stateLabel[r.state]}
               </span>
             </div>
             {r.state === "Pending" && (
@@ -76,14 +94,14 @@ export function HeroLeaveCard({ className }: { className?: string }) {
                   onClick={() => decide(i, "Approved")}
                   className="flex-1 rounded-lg bg-ink py-1.5 text-[11.5px] font-bold text-white transition-colors hover:bg-accent-strong"
                 >
-                  Approve
+                  {tr(lang, "Approve", "Approuver")}
                 </button>
                 <button
                   type="button"
                   onClick={() => decide(i, "Declined")}
                   className="flex-1 rounded-lg border border-line py-1.5 text-[11.5px] font-bold text-ink transition-colors hover:border-ink/40"
                 >
-                  Decline
+                  {tr(lang, "Decline", "Refuser")}
                 </button>
               </div>
             )}
@@ -97,31 +115,36 @@ export function HeroLeaveCard({ className }: { className?: string }) {
               <span className="absolute inline-flex size-full animate-ping rounded-full bg-accent-strong opacity-60" />
               <span className="relative inline-flex size-2 rounded-full bg-accent-strong" />
             </span>
-            Try it: approve the request
+            {tr(lang, "Try it: approve the request", "Essayez : approuvez la demande")}
           </span>
         ) : (
           <button type="button" onClick={reset} className="font-bold text-accent-strong hover:text-ink">
-            Replay ↺
+            {tr(lang, "Replay ↺", "Rejouer ↺")}
           </button>
         )}
-        <span>Illustrative data</span>
+        <span>{tr(lang, "Illustrative data", "Données illustratives")}</span>
       </p>
     </div>
   );
 }
 
 export function HeroFollowUps({ className }: { className?: string }) {
+  const lang = useLang();
   const [done, setDone] = useState<string[]>([]);
-  const items = ["Call Savanna Foods", "Send proposal to Mara Distributors", "Visit Kilimani Hardware"];
+  const items = [
+    tr(lang, "Call Savanna Foods", "Appeler Savanna Foods"),
+    tr(lang, "Send proposal to Mara Distributors", "Envoyer la proposition à Mara Distributors"),
+    tr(lang, "Visit Kilimani Hardware", "Rendre visite à Kilimani Hardware"),
+  ];
   const toggle = (t: string) => setDone((d) => (d.includes(t) ? d.filter((x) => x !== t) : [...d, t]));
   const left = items.length - done.length;
 
   return (
     <div className={cn("rounded-2xl bg-white p-4 text-left shadow-float", className)}>
       <div className="flex items-center justify-between">
-        <p className="text-[12px] font-bold uppercase tracking-[0.08em] text-muted">Follow-ups today</p>
+        <p className="text-[12px] font-bold uppercase tracking-[0.08em] text-muted">{tr(lang, "Follow-ups today", "Relances du jour")}</p>
         <span className="rounded-full bg-accent-soft px-2 py-0.5 text-[11px] font-bold text-accent-strong tabular-nums">
-          {left} left
+          {left} {tr(lang, "left", left > 1 ? "restantes" : "restante")}
         </span>
       </div>
       <ul className="mt-3 space-y-1">
@@ -155,7 +178,7 @@ export function HeroFollowUps({ className }: { className?: string }) {
         })}
       </ul>
       <p className="mt-2 text-[11.5px] text-muted">
-        {left === 0 ? "All caught up — nice work." : "Sales Tracker · tick a task"}
+        {left === 0 ? tr(lang, "All caught up — nice work.", "Tout est à jour — bon travail.") : tr(lang, "Sales Tracker · tick a task", "Sales Tracker · cochez une tâche")}
       </p>
     </div>
   );

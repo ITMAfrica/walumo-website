@@ -1,7 +1,6 @@
-import Link from "next/link";
+import Link from "@/components/ui/link";
 import type { ComponentProps, ReactNode } from "react";
 import { ArrowRight, Check, Star } from "./icons";
-import { site } from "@/lib/site";
 
 export function cn(...classes: (string | false | null | undefined)[]) {
   return classes.filter(Boolean).join(" ");
@@ -28,7 +27,7 @@ export function Section({
   const tones = {
     white: "bg-white",
     surface: "bg-surface",
-    fade: "bg-gradient-to-b from-surface to-white",
+    fade: "bg-surface",
     dark: "bg-ink text-white",
   };
   return <section className={cn("py-20 sm:py-24 lg:py-28", tones[tone], className)} {...rest} />;
@@ -40,14 +39,8 @@ export function Section({
 
 export function Eyebrow({ children, className, dark }: { children: ReactNode; className?: string; dark?: boolean }) {
   return (
-    <span
-      className={cn(
-        "inline-flex w-fit items-center gap-2 rounded-full border px-3 py-1 text-[11px] font-bold uppercase tracking-[0.12em]",
-        dark ? "border-white/15 bg-white/[0.06] text-white/80" : "border-accent-strong/15 bg-accent-soft/70 text-accent-strong",
-        className,
-      )}
-    >
-      <span className={cn("size-1.5 rounded-full", dark ? "bg-accent" : "bg-accent-strong")} aria-hidden="true" />
+    <span className={cn("inline-flex w-fit items-center gap-3 text-[15px] font-bold", dark ? "text-accent" : "text-accent-strong", className)}>
+      <span className="h-px w-6 bg-current opacity-60" aria-hidden="true" />
       {children}
     </span>
   );
@@ -86,7 +79,7 @@ export function SectionHeading({
         {accent && (
           <>
             {" "}
-            <em className={cn("italic", dark ? "text-accent" : "text-accent-strong")}>{accent}</em>
+            <em className="not-italic">{accent}</em>
           </>
         )}
       </Tag>
@@ -126,7 +119,7 @@ export function Button({ href, children, variant = "primary", size = "md", arrow
     <Link
       href={href}
       className={cn(
-        "group inline-flex items-center justify-center gap-2 rounded-full font-medium transition-[color,background-color,border-color,translate,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] active:translate-y-0",
+        "group inline-flex items-center justify-center gap-2 rounded-full font-medium transition-[color,background-color,border-color,translate,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] active:translate-y-0 active:scale-[0.98]",
         variants[variant],
         sizes[size],
         className,
@@ -158,29 +151,6 @@ export function TextLink({ href, children, className }: { href: string; children
       {children}
       <ArrowRight size={14} className="transition-transform duration-200 group-hover:translate-x-0.5" />
     </Link>
-  );
-}
-
-export function CtaPair({
-  className,
-  dark,
-  primary = site.primaryCta,
-  secondary = site.secondaryCta,
-}: {
-  className?: string;
-  dark?: boolean;
-  primary?: { label: string; href: string };
-  secondary?: { label: string; href: string };
-}) {
-  return (
-    <div className={cn("flex flex-wrap items-center justify-center gap-3", className)}>
-      <Button href={primary.href} variant={dark ? "light" : "primary"} arrow>
-        {primary.label}
-      </Button>
-      <Button href={secondary.href} variant={dark ? "ghost" : "outline"}>
-        {secondary.label}
-      </Button>
-    </div>
   );
 }
 
