@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { NewsletterForm } from "@/components/layout/newsletter-form";
 import { ArticleCard, EventCard, ReportCard } from "@/components/sections/collections";
-import { StoriesComingSoon } from "@/components/sections/social-proof";
+import { CaseStudyCard, Testimonials } from "@/components/sections/social-proof";
 import { Container, Eyebrow, Section, SectionHeading } from "@/components/ui/primitives";
 import { Reveal } from "@/components/ui/reveal";
-import { articles, events, reports } from "@/lib/content";
+import { articles, caseStudies, events, reports } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Insights",
@@ -108,9 +108,10 @@ export default function InsightsPage() {
       </Section>
 
       <Section tone="surface" id="case-studies" className="scroll-mt-20">
-        <Container size="narrow">
+        <Container>
           <SectionHeading eyebrow="Case studies" title="Results from teams running Walumo" />
-          <StoriesComingSoon className="mt-10" />
+          <CaseStudyCard study={caseStudies[0]} className="mt-12" />
+          <Testimonials className="mt-6" />
         </Container>
       </Section>
 

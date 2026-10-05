@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { footerGroups, legalLinks, site, socials } from "@/lib/site";
+import { footerGroups, hasWhatsapp, legalLinks, site, socials } from "@/lib/site";
 import { Logo } from "@/components/ui/logo";
 import { Mail, MapPin, SocialIcon } from "@/components/ui/icons";
 import { NewsletterForm } from "./newsletter-form";
@@ -50,11 +50,13 @@ export function Footer() {
                   {site.email}
                 </a>
               </li>
-              <li>
-                <a href={site.whatsappCta.href} className="font-medium text-accent hover:text-white">
-                  Chat on WhatsApp →
-                </a>
-              </li>
+              {hasWhatsapp && (
+                <li>
+                  <a href={site.whatsappCta.href} className="font-medium text-accent hover:text-white">
+                    Chat on WhatsApp →
+                  </a>
+                </li>
+              )}
             </ul>
           </div>
         </div>
