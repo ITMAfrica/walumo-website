@@ -54,6 +54,9 @@ const WHATSAPP_MESSAGE = "Hello Walumo, I'd like to talk about your products.";
 
 export const hasWhatsapp = WHATSAPP_NUMBER !== "";
 
+/** Raw WhatsApp number, shared with the localised site configs. */
+export const whatsappPhone = WHATSAPP_NUMBER;
+
 export const whatsappHref = hasWhatsapp
   ? `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`
   : "/contact#whatsapp";

@@ -1,9 +1,11 @@
-import Link from "next/link";
+import Link from "@/components/ui/link";
 import { Container, Section, SectionHeading, TextLink, cn } from "@/components/ui/primitives";
 import { ArrowUpRight } from "@/components/ui/icons";
 import { Reveal, ScrollLine } from "@/components/ui/reveal";
+import { getLang } from "@/lib/i18n-server";
+import { tr, type Locale } from "@/lib/i18n";
 import { LogoMark } from "@/components/ui/logo";
-import { PhotoPlaceholder } from "@/components/ui/visuals";
+import { PhotoShowcase } from "@/components/sections/photo-showcase";
 
 /* ------------------------------------------------------------------ */
 /* "Walumo in action": bento grid of real photos                       */
@@ -18,139 +20,84 @@ type Tile = {
   className: string;
 };
 
-const tiles: Tile[] = [
+const tilesFor = (lang: Locale): Tile[] => [
   {
     src: "/images/team-workshop.jpg",
-    alt: "A Walumo implementation workshop with a client team",
-    label: "Implementation",
-    caption: "Workshops with client teams, from first login to full adoption",
+    alt: tr(lang, "A Walumo implementation workshop with a client team", "Un atelier de mise en œuvre Walumo avec l'équipe d'un client"),
+    label: tr(lang, "Implementation", "Mise en œuvre"),
+    caption: tr(lang, "Workshops with client teams, from first login to full adoption", "Des ateliers avec les équipes clientes, de la première connexion à l'adoption complète"),
+    href: "/what-we-do",
     className: "sm:col-span-2 lg:row-span-2",
   },
   {
     src: "/images/hackathon/img_1897.jpg",
-    alt: "Walumo Hacklab participants in front of the Hacklab backdrop",
+    alt: tr(lang, "Walumo Hacklab participants in front of the Hacklab backdrop", "Des participants du Walumo Hacklab devant le fond Hacklab"),
     label: "Walumo Hacklab",
-    caption: "Spotlighting Africa's emerging tech talent",
+    caption: tr(lang, "Spotlighting Africa's emerging tech talent", "Mettre en lumière les talents tech émergents d'Afrique"),
     href: "/insights/events/walumo-hacklab",
     className: "sm:col-span-2",
   },
   {
     src: "/images/hackathon/img_1798.jpg",
-    alt: "Hacklab participants building on a laptop",
-    label: "Build",
-    caption: "Teams building real solutions",
+    alt: tr(lang, "Hacklab participants building on a laptop", "Des participants du Hacklab au travail sur un ordinateur portable"),
+    label: tr(lang, "Build", "Création"),
+    caption: tr(lang, "Teams building real solutions", "Des équipes qui créent de vraies solutions"),
     href: "/insights/events/walumo-hacklab",
     className: "",
   },
   {
     src: "/images/hackathon/img_2546.jpg",
-    alt: "A Hacklab participant pitching a solution on stage",
-    label: "Pitch",
-    caption: "Ideas pitched and demoed live",
+    alt: tr(lang, "A Hacklab participant pitching a solution on stage", "Un participant du Hacklab présente sa solution sur scène"),
+    label: tr(lang, "Pitch", "Pitch"),
+    caption: tr(lang, "Ideas pitched and demoed live", "Des idées présentées et démontrées en direct"),
     href: "/insights/events/walumo-hacklab",
     className: "",
   },
   {
     src: "/images/hackathon/img_2043.jpg",
-    alt: "Three people smiling in front of the Walumo Hacklab backdrop",
+    alt: tr(lang, "Three people smiling in front of the Walumo Hacklab backdrop", "Trois personnes souriantes devant le fond du Walumo Hacklab"),
     label: "Hacklab",
-    caption: "Celebrating the builders and their ideas",
+    caption: tr(lang, "Celebrating the builders and their ideas", "Célébrer ceux qui construisent et leurs idées"),
     href: "/insights/events/walumo-hacklab",
     className: "",
   },
   {
     src: "/images/hackathon/img_1866.jpg",
-    alt: "A Hacklab team in Walumo t-shirts",
-    label: "Community",
-    caption: "Developers, designers and product thinkers",
+    alt: tr(lang, "A Hacklab team in Walumo t-shirts", "Une équipe du Hacklab en t-shirts Walumo"),
+    label: tr(lang, "Community", "Communauté"),
+    caption: tr(lang, "Developers, designers and product thinkers", "Développeurs, designers et experts produit"),
     href: "/insights/events/walumo-hacklab",
     className: "sm:col-span-2",
   },
 ];
 
-function PhotoTile({ tile, delay }: { tile: Tile; delay: number }) {
-  const content = (
-    <PhotoPlaceholder
-      src={tile.src}
-      alt={tile.alt}
-      overlay
-      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-      className="h-full min-h-[240px] rounded-[var(--radius-card)]"
-    >
-      <div className="flex h-full flex-col justify-end p-5 sm:p-6">
-        <span className="w-fit rounded-full border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-bold uppercase tracking-[0.12em] text-white backdrop-blur-md">
-          {tile.label}
-        </span>
-        <p className="mt-3 max-w-sm translate-y-1 text-[15px] font-bold leading-snug text-white transition-[translate] duration-500 group-hover:translate-y-0">
-          {tile.caption}
-        </p>
-      </div>
-      {tile.href && (
-        <span className="absolute right-4 top-4 flex size-10 scale-75 items-center justify-center rounded-full bg-white text-ink opacity-0 shadow-float transition-[opacity,scale] duration-500 group-hover:scale-100 group-hover:opacity-100">
-          <ArrowUpRight size={16} />
-        </span>
-      )}
-    </PhotoPlaceholder>
-  );
-
-  return (
-    <Reveal as="li" variant="scale" delay={delay} className={cn("h-full", tile.className)}>
-      {tile.href ? (
-        <Link href={tile.href} className="group block h-full rounded-[var(--radius-card)]">
-          {content}
-        </Link>
-      ) : (
-        <div className="group h-full">{content}</div>
-      )}
-    </Reveal>
-  );
-}
-
-export function PeopleBento() {
+export async function PeopleBento() {
+  const lang = await getLang();
+  const tiles = tilesFor(lang);
   return (
     <Section>
       <Container>
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <SectionHeading
             align="left"
-            eyebrow="Walumo in action"
-            title="People first,"
-            accent="then software"
-            text="Real teams, real workshops, real builders. Walumo is a team on the ground — implementing with clients and growing the next generation of African tech talent."
+            eyebrow={tr(lang, "Walumo in action", "Walumo en action")}
+            title={tr(lang, "People first,", "Les personnes d'abord,")}
+            accent={tr(lang, "then software", "le logiciel ensuite")}
+            text={tr(
+              lang,
+              "Real teams, real workshops, real builders. Walumo is a team on the ground — implementing with clients and growing the next generation of African tech talent.",
+              "De vraies équipes, de vrais ateliers, de vrais bâtisseurs. Walumo est une équipe de terrain : elle déploie ses solutions avec ses clients et forme la prochaine génération de talents tech africains.",
+            )}
           />
           <TextLink href="/insights/events/walumo-hacklab" className="shrink-0">
-            See the Hacklab
+            {tr(lang, "See the Hacklab", "Découvrir le Hacklab")}
           </TextLink>
         </div>
-        <ul className="mt-12 grid auto-rows-[240px] gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:auto-rows-[260px]">
-          {tiles.slice(0, 4).map((t, i) => (
-            <PhotoTile key={t.src} tile={t} delay={i * 90} />
-          ))}
-          <Reveal as="li" variant="scale" delay={360} className="h-full">
-            <Link
-              href="/contact"
-              className="group relative flex h-full flex-col justify-between overflow-hidden rounded-[var(--radius-card)] bg-ink p-6 text-white"
-            >
-              <div
-                className="pointer-events-none absolute -right-16 -top-16 size-48 rounded-full bg-accent/25 blur-3xl transition-[scale] duration-700 group-hover:scale-150"
-                aria-hidden="true"
-              />
-              <LogoMark size={34} className="relative" />
-              <div className="relative">
-                <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-accent">Headquartered in Nairobi</p>
-                <p className="mt-2 font-serif text-[1.65rem] leading-tight">Built in Africa, for African organisations</p>
-                <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-bold text-accent">
-                  Visit us
-                  <ArrowUpRight size={14} className="transition-[translate] duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-                </span>
-              </div>
-            </Link>
-          </Reveal>
-          {tiles.slice(4).map((t, i) => (
-            <PhotoTile key={t.src} tile={t} delay={450 + i * 90} />
-          ))}
-        </ul>
       </Container>
+        <PhotoShowcase
+          cta={tr(lang, "See more", "En savoir plus")}
+          slides={tiles.map((t) => ({ src: t.src, alt: t.alt, title: t.label, text: t.caption, href: t.href }))}
+        />
     </Section>
   );
 }

@@ -1,32 +1,85 @@
 "use client";
 
-import Link from "next/link";
+import { Icon3D } from "@/components/ui/icon-3d";
+import Link from "@/components/ui/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { hasWhatsapp, mainNav, site, type NavItem } from "@/lib/site";
+import NextLink from "next/link";
+import type { NavItem } from "@/lib/site";
+import { siteFor } from "@/lib/i18n-data";
+import { switchLocalePath, tr, type Locale } from "@/lib/i18n";
+import { useLang } from "@/components/ui/locale";
 import { Logo } from "@/components/ui/logo";
 import { ArrowRight, ChevronDown, Close, FeatureIcon, Menu, Plus } from "@/components/ui/icons";
 import { Button, cn } from "@/components/ui/primitives";
 import { PhotoPlaceholder } from "@/components/ui/visuals";
 import { ScrollProgress } from "@/components/ui/reveal";
 
+const localeOptions: { code: Locale; short: string; name: string }[] = [
+  { code: "en", short: "EN", name: "English" },
+  { code: "fr", short: "FR", name: "Français" },
+];
+
+/** Compact EN | FR switch: links to the same page in the other language. */
+function LanguageSwitcher({ className }: { className?: string }) {
+  const lang = useLang();
+  const pathname = usePathname();
+  return (
+    <div
+      role="group"
+      aria-label={tr(lang, "Language", "Langue")}
+      className={cn("flex items-center text-[13px] font-medium", className)}
+    >
+      {localeOptions.map((o, i) => (
+        <span key={o.code} className="flex items-center">
+          {i > 0 && (
+            <span className="text-line" aria-hidden="true">
+              |
+            </span>
+          )}
+          <NextLink
+            href={switchLocalePath(pathname, o.code)}
+            lang={o.code}
+            hrefLang={o.code}
+            aria-label={o.name}
+            aria-current={lang === o.code ? "true" : undefined}
+            className={cn(
+              "rounded-full px-2 py-1 transition-colors",
+              lang === o.code ? "text-ink" : "text-muted hover:text-accent-strong",
+            )}
+          >
+            {o.short}
+          </NextLink>
+        </span>
+      ))}
+    </div>
+  );
+}
+
 export function AnnouncementBar() {
+  const { site } = siteFor(useLang());
+  const lang = useLang();
   const a = site.announcement;
   return (
-    <div className="bg-ink-deep text-white">
+    <div className="relative border-b border-white/10 bg-ink-deep text-white">
+      <div
+        className="pointer-events-none absolute inset-0 opacity-60"
+        style={{
+          background:
+            "radial-gradient(60% 140% at 50% -40%, color-mix(in srgb, var(--color-accent, #5eead4) 28%, transparent), transparent 70%)",
+        }}
+        aria-hidden="true"
+      />
       <Link
         href={a.href}
-        className="mx-auto flex max-w-[1280px] items-center justify-center gap-3 px-5 py-2.5 text-[13px]"
+        className="group relative mx-auto flex max-w-[1280px] items-center justify-center gap-3 px-5 py-2 text-[13px]"
       >
-        <span className="hidden size-6 items-center justify-center rounded-full bg-accent/20 text-accent sm:inline-flex">
-          <FeatureIcon name="sparkles" size={14} />
+        <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-white/15 bg-white/10 px-2.5 py-0.5 text-[11px] font-semibold tracking-wide text-white">
+          <span className="size-1.5 animate-pulse rounded-full bg-amber-300" aria-hidden="true" />
+          {tr(lang, "Under construction", "En construction")}
         </span>
-        <span className="hidden text-white/60 sm:inline">+</span>
-        <span className="font-medium">{a.date}</span>
-        <span className="hidden h-3.5 w-px bg-white/30 sm:inline-block" />
-        <span className="line-clamp-1 text-white/90">{a.text}</span>
-        <span className="hidden text-white/60 sm:inline">+</span>
-        <span className="hidden shrink-0 items-center gap-1 text-accent md:inline-flex">
+        <span className="line-clamp-1 text-white/85">{a.text}</span>
+        <span className="hidden shrink-0 items-center gap-1 font-medium text-accent transition-transform group-hover:translate-x-0.5 md:inline-flex">
           {a.cta} <ArrowRight size={14} />
         </span>
       </Link>
@@ -48,9 +101,7 @@ function MegaPanel({ item, onNavigate }: { item: NavItem; onNavigate: () => void
                 onClick={onNavigate}
                 className="flex items-start gap-3 rounded-xl p-3 transition-colors hover:bg-surface"
               >
-                <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-surface-2 text-ink-soft">
-                  <FeatureIcon name={l.icon} size={18} />
-                </span>
+                <Icon3D name={l.icon} className="w-9" />
                 <span>
                   <span className="block text-[14.5px] font-medium text-ink">{l.label}</span>
                   <span className="block text-[13px] text-muted">{l.description}</span>
@@ -85,7 +136,10 @@ function MegaPanel({ item, onNavigate }: { item: NavItem; onNavigate: () => void
 }
 
 export function Header() {
+  const lang = useLang();
+  const { hasWhatsapp, mainNav, site } = siteFor(lang);
   const pathname = usePathname();
+  const barePath = switchLocalePath(pathname, "en");
   const [open, setOpen] = useState<number | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileSection, setMobileSection] = useState<number | null>(null);
@@ -164,10 +218,10 @@ export function Header() {
       <div className="mx-auto flex h-[72px] max-w-[1280px] items-center justify-between gap-6 px-5 sm:px-8 lg:px-10">
         <Logo />
 
-        <nav ref={navRef} aria-label="Main navigation" className="hidden lg:block">
+        <nav ref={navRef} aria-label={tr(lang, "Main navigation", "Navigation principale")} className="hidden lg:block">
           <ul className="flex items-center gap-1">
             {mainNav.map((item, i) => {
-              const active = pathname.startsWith(item.href);
+              const active = barePath.startsWith(item.href);
               return (
                 <li
                   key={item.label}
@@ -210,6 +264,7 @@ export function Header() {
         </nav>
 
         <div className="hidden items-center gap-2 lg:flex">
+          <LanguageSwitcher className="mr-1" />
           {hasWhatsapp && (
             <Button href={site.whatsappCta.href} variant="outline" size="sm" className="border-ink/30">
               {site.whatsappCta.label}
@@ -223,7 +278,9 @@ export function Header() {
         <button
           type="button"
           className="-mr-2 flex size-11 items-center justify-center rounded-full lg:hidden"
-          aria-label={mobileOpen ? "Close menu" : "Open menu"}
+          aria-label={
+            mobileOpen ? tr(lang, "Close menu", "Fermer le menu") : tr(lang, "Open menu", "Ouvrir le menu")
+          }
           aria-expanded={mobileOpen}
           onClick={() => setMobileOpen((v) => !v)}
         >
@@ -277,7 +334,8 @@ export function Header() {
             </li>
           ))}
         </ul>
-        <div className="mt-8 grid gap-3">
+        <LanguageSwitcher className="mt-6 -ml-2" />
+        <div className="mt-6 grid gap-3">
           <Button href={site.primaryCta.href} arrow>
             {site.primaryCta.label}
           </Button>

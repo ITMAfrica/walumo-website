@@ -1,94 +1,100 @@
-import Link from "next/link";
-import { articles, events, reports, type Article, type EventItem, type Report } from "@/lib/content";
+import type { ReactNode } from "react";
+import Link from "@/components/ui/link";
+import type { Article, EventItem, Report } from "@/lib/content";
+import { getContent, getLang } from "@/lib/i18n-server";
+import { tr } from "@/lib/i18n";
 import { Container, Eyebrow, Section, SectionHeading, TextLink, cn } from "@/components/ui/primitives";
-import { ArrowUpRight, Clock, FeatureIcon } from "@/components/ui/icons";
+import { ArrowUpRight, FeatureIcon } from "@/components/ui/icons";
 import { Reveal } from "@/components/ui/reveal";
+import { ArticleIllustration, EventIllustration, ReportIllustration } from "@/components/ui/article-mocks";
 import { PhotoPlaceholder } from "@/components/ui/visuals";
 
 /* ------------------------------------------------------------------ */
 /* Insight cards                                                       */
 /* ------------------------------------------------------------------ */
 
-export function ArticleCard({ article, large }: { article: Article; large?: boolean }) {
-  return (
-    <Link href={`/insights/${article.slug}`} className="group flex h-full flex-col">
-      <PhotoPlaceholder
-        tone="sky"
-        src={article.image}
-        alt=""
-        sizes={large ? "(max-width: 1024px) 100vw, 60vw" : "(max-width: 768px) 100vw, 33vw"}
-        className={cn("rounded-[var(--radius-card)]", large ? "aspect-[16/9]" : "aspect-[16/10]")}
-      >
-        <div className="flex h-full items-end p-5">
-          <Eyebrow className="bg-white/90 text-ink">{article.topic}</Eyebrow>
-        </div>
-      </PhotoPlaceholder>
-      <h3
-        className={cn(
-          "mt-5 font-bold leading-snug tracking-[-0.01em] text-ink transition-colors group-hover:text-accent-strong",
-          large ? "text-2xl sm:text-[1.7rem]" : "text-lg",
-        )}
-      >
-        {article.title}
-      </h3>
-      {large && <p className="mt-3 text-[15px] leading-6 text-muted">{article.excerpt}</p>}
-      <p className="mt-3 flex items-center gap-3 text-[13px] text-muted">
-        <span>{article.date}</span>
-        <span className="inline-flex items-center gap-1">
-          <Clock size={13} /> {article.readTime}
-        </span>
-      </p>
-    </Link>
-  );
-}
-
-export function ReportCard({ report }: { report: Report }) {
+/** Shared card shell: label, title, text, then a motion-design illustration bleeding off the bottom. */
+function ResourceCard({
+  href,
+  label,
+  title,
+  text,
+  cta,
+  illustration,
+}: {
+  href: string;
+  label: string;
+  title: string;
+  text: string;
+  cta?: string;
+  illustration: ReactNode;
+}) {
   return (
     <Link
-      href={`/insights/reports/${report.slug}`}
-      className="group grid h-full overflow-hidden rounded-[var(--radius-card)] bg-white shadow-card transition-shadow hover:shadow-float sm:grid-cols-[180px_1fr]"
+      href={href}
+      className="group flex h-full flex-col overflow-hidden rounded-[2rem] bg-gradient-to-b from-white to-surface/60 shadow-card ring-1 ring-line/70 transition-shadow duration-300 hover:shadow-float"
     >
-      <PhotoPlaceholder tone="ink" className="min-h-[200px]">
-        <div className="flex h-full flex-col justify-between p-5">
-          <span className="text-[10.5px] font-bold uppercase tracking-[0.14em] text-white/60">Walumo · Report</span>
-          <p className="font-serif text-xl leading-tight text-white">{report.title}</p>
-        </div>
-      </PhotoPlaceholder>
-      <div className="flex flex-col p-6">
-        <Eyebrow className="w-fit bg-accent-soft text-accent-strong">{report.status}</Eyebrow>
-        <h3 className="mt-4 text-lg font-bold leading-snug text-ink group-hover:text-accent-strong">{report.title}</h3>
-        <p className="mt-2 flex-1 text-[15px] leading-6 text-muted">{report.summary}</p>
-        <span className="mt-4 inline-flex items-center gap-1 text-sm font-bold text-accent-strong">
-          Get the report <ArrowUpRight size={14} />
-        </span>
+      <div className="flex flex-1 flex-col px-7 pt-8 sm:px-9">
+        <p className="text-[15px] font-bold text-accent-strong">{label}</p>
+        <h3 className="mt-3 text-[1.6rem] font-medium leading-[1.2] tracking-[-0.02em] text-ink transition-colors group-hover:text-accent-strong">{title}</h3>
+        <p className="mt-4 line-clamp-3 text-base leading-7 text-muted">{text}</p>
+        {cta ? (
+          <span className="mb-8 mt-5 inline-flex items-center gap-1 text-sm font-bold text-accent-strong">
+            {cta} <ArrowUpRight size={14} />
+          </span>
+        ) : (
+          <div className="mb-8" />
+        )}
       </div>
+      {illustration}
     </Link>
   );
 }
 
-export function EventCard({ event }: { event: EventItem }) {
+export function ArticleCard({ article }: { article: Article }) {
   return (
-    <Link href={`/insights/events/${event.slug}`} className="group flex h-full flex-col overflow-hidden rounded-[var(--radius-card)] bg-white shadow-card transition-shadow hover:shadow-float">
-      <PhotoPlaceholder src={event.cover} alt="" overlay sizes="(max-width: 768px) 100vw, 50vw" className="aspect-[16/9]">
-        <div className="flex h-full items-end p-5">
-          <Eyebrow className="bg-white/90 text-ink">{event.status}</Eyebrow>
-        </div>
-      </PhotoPlaceholder>
-      <div className="flex flex-1 flex-col p-6">
-        <h3 className="text-xl font-bold text-ink group-hover:text-accent-strong">{event.title}</h3>
-        <p className="mt-2 flex-1 text-[15px] leading-6 text-muted">{event.summary}</p>
-        <span className="mt-4 inline-flex items-center gap-1 text-sm font-bold text-accent-strong">
-          See the highlights <ArrowUpRight size={14} />
-        </span>
-      </div>
-    </Link>
+    <ResourceCard
+      href={`/insights/${article.slug}`}
+      label={article.topic}
+      title={article.title}
+      text={article.excerpt}
+      illustration={<ArticleIllustration topic={article.topic} />}
+    />
+  );
+}
+
+export async function ReportCard({ report }: { report: Report }) {
+  const lang = await getLang();
+  return (
+    <ResourceCard
+      href={`/insights/reports/${report.slug}`}
+      label={`${tr(lang, "Report", "Rapport")} · ${report.status}`}
+      title={report.title}
+      text={report.summary}
+      cta={tr(lang, "Get the report", "Obtenir le rapport")}
+      illustration={<ReportIllustration chapters={report.chapters} />}
+    />
+  );
+}
+
+export async function EventCard({ event }: { event: EventItem }) {
+  const lang = await getLang();
+  return (
+    <ResourceCard
+      href={`/insights/events/${event.slug}`}
+      label={`${tr(lang, "Event", "Événement")} · ${event.status}`}
+      title={event.title}
+      text={event.summary}
+      cta={tr(lang, "See the highlights", "Voir les temps forts")}
+      illustration={<EventIllustration highlights={event.highlights ?? []} />}
+    />
   );
 }
 
 /** "Insights for leaders" strip used on the home and product pages. */
-export function InsightsGrid({
-  title = "Ideas and evidence for African business leaders",
-  text = "Practical guidance, research and points of view on running and scaling a business in Africa.",
+export async function InsightsGrid({
+  title: titleProp,
+  text: textProp,
   limit = 3,
   tone = "white",
 }: {
@@ -97,13 +103,23 @@ export function InsightsGrid({
   limit?: number;
   tone?: "white" | "surface";
 }) {
+  const lang = await getLang();
+  const { articles } = await getContent();
+  const title = titleProp ?? tr(lang, "Ideas and evidence for African business leaders", "Idées et données pour les dirigeants d'entreprise africains");
+  const text =
+    textProp ??
+    tr(
+      lang,
+      "Practical guidance, research and points of view on running and scaling a business in Africa.",
+      "Conseils pratiques, études et points de vue sur la gestion et le développement d'une entreprise en Afrique.",
+    );
   return (
     <Section tone={tone}>
       <Container>
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <SectionHeading title={title} text={text} align="left" />
           <TextLink href="/insights" className="shrink-0">
-            All insights
+            {tr(lang, "All insights", "Tous les articles")}
           </TextLink>
         </div>
         <ul className="mt-12 grid gap-8 md:grid-cols-3">
@@ -119,7 +135,9 @@ export function InsightsGrid({
 }
 
 /** Compact list of the other resource types (reports + events). */
-export function MoreResources() {
+export async function MoreResources() {
+  const lang = await getLang();
+  const { events, reports } = await getContent();
   return (
     <div className="grid gap-5 lg:grid-cols-2">
       {reports.slice(0, 1).map((r) => (
@@ -134,7 +152,7 @@ export function MoreResources() {
           <PhotoPlaceholder src={e.cover} alt="" sizes="160px" className="aspect-square w-28 shrink-0 rounded-xl sm:w-36" />
           <div>
             <p className="flex items-center gap-2 text-[12px] font-bold uppercase tracking-[0.08em] text-accent-strong">
-              <FeatureIcon name="sparkles" size={14} /> Event
+              <FeatureIcon name="sparkles" size={14} /> {tr(lang, "Event", "Événement")}
             </p>
             <h3 className="mt-1 text-lg font-bold text-ink group-hover:text-accent-strong">{e.title}</h3>
             <p className="mt-1 line-clamp-2 text-[14px] leading-6 text-muted">{e.summary}</p>

@@ -112,7 +112,7 @@ export const Star = ({ size = 16, ...rest }: Props) => (
   </svg>
 );
 
-const featurePaths: Record<IconName, React.ReactNode> = {
+export const featurePaths: Record<IconName, React.ReactNode> = {
   code: <path d="m8.5 8-4 4 4 4M15.5 8l4 4-4 4M13.5 5.5l-3 13" />,
   layers: (
     <>

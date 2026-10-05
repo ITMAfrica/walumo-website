@@ -22,10 +22,11 @@
 
   --font-sans: var(--font-candara), Candara, ui-sans-serif, system-ui, sans-serif;
   --font-serif: var(--font-noto-serif), ui-serif, Georgia, serif;
+  --font-hand: var(--font-hand), "Bradley Hand", cursive;
 
   --radius-card: 1.25rem;
 
-  --shadow-card: 0 1px 2px rgb(6 20 51 / 0.05), 0 12px 32px -12px rgb(6 20 51 / 0.14);
+  --shadow-card: 0 1px 2px rgb(30 50 120 / 0.05), 0 12px 32px -12px rgb(40 60 140 / 0.16);
   --shadow-float: 0 2px 4px rgb(6 20 51 / 0.07), 0 24px 48px -16px rgb(6 20 51 / 0.25);
   --shadow-lift: 0 4px 8px rgb(6 20 51 / 0.06), 0 32px 64px -20px rgb(6 20 51 / 0.32);
   --shadow-glow: 0 0 0 1px rgb(37 112 200 / 0.12), 0 18px 50px -12px rgb(37 112 200 / 0.45);
@@ -131,6 +132,195 @@
   }
 }
 
+
+/* Article card illustrations: bars grow and columns rise on load. */
+.art-bar {
+  transform-origin: left;
+  animation: art-bar 1.1s var(--ease-out-expo) both;
+}
+.art-rise {
+  transform-origin: bottom;
+  animation: art-rise 1s var(--ease-out-expo) both;
+}
+@keyframes art-bar {
+  from {
+    transform: scaleX(0);
+  }
+}
+@keyframes art-rise {
+  from {
+    transform: scaleY(0.15);
+    opacity: 0;
+  }
+}
+
+/* Journey scenes: elements choreograph in when the step's scene gets data-on="true". */
+.mo-pop {
+  opacity: 0;
+  transform: translateY(16px) scale(0.9);
+}
+.mo-bar {
+  transform: scaleX(0);
+  transform-origin: left;
+}
+.mo-draw {
+  stroke-dasharray: 26;
+  stroke-dashoffset: 26;
+}
+.mo-slide {
+  transform: translateX(0);
+}
+[data-on="true"] .mo-pop {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.5s ease-out var(--d, 0s),
+    transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) var(--d, 0s);
+}
+[data-on="true"] .mo-bar {
+  transform: scaleX(1);
+  transition: transform 1.1s cubic-bezier(0.22, 1, 0.36, 1) var(--d, 0s);
+}
+[data-on="true"] .mo-draw {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.6s ease-out var(--d, 0s);
+}
+[data-on="true"] .mo-slide {
+  transform: translateX(var(--x, 18px));
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) var(--d, 0s);
+}
+[data-on="true"] .mo-float {
+  animation: mo-float 3.6s ease-in-out var(--d, 0s) infinite;
+}
+@keyframes mo-float {
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+/* Fluted glass banner: pastel aqua / sky / lavender wash with a blush of pink in the corner, seen through
+   vertical reeded-glass bands. Use on hero and page-header sections. */
+.fluted {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    radial-gradient(58% 78% at 0% 108%, rgb(248 190 202 / 0.9) 0%, rgb(248 190 202 / 0) 72%),
+    radial-gradient(52% 72% at 12% -6%, rgb(184 240 231 / 0.95) 0%, rgb(184 240 231 / 0) 68%),
+    radial-gradient(62% 82% at 100% 42%, rgb(174 200 245 / 0.95) 0%, rgb(174 200 245 / 0) 72%),
+    linear-gradient(105deg, #eefaf8 0%, #eaf2fd 45%, #e3e6fb 100%);
+}
+.fluted::before,
+.fluted::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+/* the reeded glass: each band is bright on its left edge, melts to clear, then a hairline separates it from the next */
+.fluted::before {
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgb(255 255 255 / 0.5) 0,
+    rgb(255 255 255 / 0.16) 58px,
+    rgb(255 255 255 / 0) 94px,
+    rgb(70 100 180 / 0.07) 94px,
+    rgb(70 100 180 / 0.07) 95px,
+    rgb(255 255 255 / 0.5) 95px,
+    rgb(255 255 255 / 0.5) 96px
+  );
+}
+/* very fine grain, so the wash does not look like a flat digital gradient */
+.fluted::after {
+  opacity: 0.35;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.3 0 0 0 0 0.35 0 0 0 0 0.5 0 0 0 1 -0.45'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Suite hub choreography: hub scales in, links flow, cards and chips pop in one by one. */
+.suite-hub .hub-pop,
+.suite-hub .hub-card,
+.suite-hub .hub-chip,
+.suite-hub .hub-ticker {
+  opacity: 0;
+}
+.suite-hub[data-seen="true"] .hub-pop {
+  animation: hub-pop 1s cubic-bezier(0.34, 1.4, 0.64, 1) 0.1s both;
+}
+.suite-hub[data-seen="true"] .hub-card {
+  animation: hub-card 0.9s cubic-bezier(0.34, 1.4, 0.64, 1) calc(0.45s + var(--i) * 0.18s) both,
+    hub-bob 5.5s ease-in-out calc(1.6s + var(--i) * 0.8s) infinite;
+}
+.suite-hub[data-seen="true"] .hub-chip {
+  animation: hub-card 0.7s cubic-bezier(0.34, 1.4, 0.64, 1) calc(1.1s + var(--i) * 0.1s) both;
+}
+.suite-hub[data-seen="true"] .hub-ticker {
+  animation: hub-ticker 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.suite-hub .hub-line {
+  transition: stroke-width 0.5s, stroke 0.5s;
+}
+.suite-hub[data-seen="true"] .hub-line {
+  animation: hub-flow 1.4s linear infinite;
+}
+.suite-hub .hub-ring {
+  opacity: 0;
+}
+.suite-hub[data-seen="true"] .hub-ring {
+  animation: hub-ring 3.2s ease-out 1s infinite;
+}
+@keyframes hub-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes hub-card {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes hub-bob {
+  50% {
+    transform: translateY(-5px);
+  }
+}
+@keyframes hub-ticker {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes hub-flow {
+  to {
+    stroke-dashoffset: -24;
+  }
+}
+@keyframes hub-ring {
+  0% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.5);
+  }
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;
@@ -154,6 +344,17 @@
 
   p {
     text-wrap: pretty;
+  }
+
+  /* Fine film grain over the whole page: breaks the flat digital look. */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    pointer-events: none;
+    opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
   :focus-visible {
@@ -308,5 +509,272 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* Glow stage: pale stage with drifting pastel light behind the app window. */
+.glow-stage {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+/* Background layer only: pearl-grey wash that melts into the white copy panel (content stays crisp). */
+.glow-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: linear-gradient(180deg, #f8f9fc, #f3f5fa);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 22%);
+  mask-image: linear-gradient(180deg, transparent 0, #000 22%);
+}
+@media (min-width: 1024px) {
+  .glow-bg {
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 28%);
+    mask-image: linear-gradient(90deg, transparent 0, #000 28%);
+  }
+}
+.glow-orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(56px);
+  opacity: 0.4;
+  animation: glow-drift 11s ease-in-out infinite alternate;
+}
+@keyframes glow-drift {
+  from {
+    transform: translate3d(-6%, -4%, 0) scale(1);
+  }
+  to {
+    transform: translate3d(8%, 6%, 0) scale(1.15);
+  }
+}
+@keyframes demo-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    max-height: 90px;
+  }
+}
+@keyframes demo-pop {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.2;
+  }
+  60% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes demo-flash {
+  0% {
+    background-color: #d5f3df;
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+@keyframes demo-ripple {
+  from {
+    transform: scale(0.3);
+    opacity: 0.7;
+  }
+  to {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+@keyframes demo-caret {
+  50% {
+    opacity: 0;
+  }
+}
+.demo-in {
+  animation: demo-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  overflow: hidden;
+}
+.demo-pop {
+  animation: demo-pop 0.5s cubic-bezier(0.34, 1.4, 0.64, 1) both;
+}
+.demo-flash {
+  animation: demo-flash 1.4s ease-out both;
+}
+.demo-caret {
+  animation: demo-caret 1s steps(1) infinite;
+}
+
+/* 3D stage: the app window tilts in space (idle sway, follows the pointer) with layers floating in front. */
+.stage-3d {
+  perspective: 1400px;
+}
+.tilt-3d {
+  transform-style: preserve-3d;
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.tilt-idle {
+  animation: tilt-sway 9s ease-in-out infinite alternate;
+}
+@keyframes tilt-sway {
+  from {
+    transform: rotateX(4deg) rotateY(-8deg) rotateZ(0.5deg);
+  }
+  to {
+    transform: rotateX(2deg) rotateY(-3deg) rotateZ(0deg);
+  }
+}
+.float-z {
+  position: absolute;
+  transform: translateZ(var(--z, 70px));
+}
+.float-bob {
+  animation: float-bob 4.5s ease-in-out infinite;
+}
+@keyframes float-bob {
+  50% {
+    transform: translateY(-7px);
+  }
+}
+.float-in {
+  animation: float-in 0.7s cubic-bezier(0.34, 1.4, 0.64, 1) both;
+}
+@keyframes float-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.camera {
+  transition:
+    transform 0.95s cubic-bezier(0.65, 0, 0.35, 1),
+    transform-origin 0.95s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* The app window melts away through its lower part along a smootherstep curve (many small steps),
+   so there is no visible start or end to the fade. */
+.window-fade {
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 58%, rgb(0 0 0 / 0.993) 62%, rgb(0 0 0 / 0.949) 66%, rgb(0 0 0 / 0.855) 70%, rgb(0 0 0 / 0.715) 74%, rgb(0 0 0 / 0.545) 78%, rgb(0 0 0 / 0.368) 82%, rgb(0 0 0 / 0.210) 86%, rgb(0 0 0 / 0.091) 90%, rgb(0 0 0 / 0.023) 94%, transparent 98%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 58%, rgb(0 0 0 / 0.993) 62%, rgb(0 0 0 / 0.949) 66%, rgb(0 0 0 / 0.855) 70%, rgb(0 0 0 / 0.715) 74%, rgb(0 0 0 / 0.545) 78%, rgb(0 0 0 / 0.368) 82%, rgb(0 0 0 / 0.210) 86%, rgb(0 0 0 / 0.091) 90%, rgb(0 0 0 / 0.023) 94%, transparent 98%, transparent 100%);
+}
+/* The saturated blue rail fades earlier along the same curve, so it never ends in a visible block. */
+.rail-fade {
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 34%, rgb(0 0 0 / 0.998) 38%, rgb(0 0 0 / 0.982) 42%, rgb(0 0 0 / 0.947) 46%, rgb(0 0 0 / 0.888) 50%, rgb(0 0 0 / 0.806) 54%, rgb(0 0 0 / 0.705) 58%, rgb(0 0 0 / 0.590) 62%, rgb(0 0 0 / 0.470) 66%, rgb(0 0 0 / 0.351) 70%, rgb(0 0 0 / 0.243) 74%, rgb(0 0 0 / 0.151) 78%, rgb(0 0 0 / 0.080) 82%, rgb(0 0 0 / 0.032) 86%, rgb(0 0 0 / 0.008) 90%, transparent 94%, transparent 96%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 34%, rgb(0 0 0 / 0.998) 38%, rgb(0 0 0 / 0.982) 42%, rgb(0 0 0 / 0.947) 46%, rgb(0 0 0 / 0.888) 50%, rgb(0 0 0 / 0.806) 54%, rgb(0 0 0 / 0.705) 58%, rgb(0 0 0 / 0.590) 62%, rgb(0 0 0 / 0.470) 66%, rgb(0 0 0 / 0.351) 70%, rgb(0 0 0 / 0.243) 74%, rgb(0 0 0 / 0.151) 78%, rgb(0 0 0 / 0.080) 82%, rgb(0 0 0 / 0.032) 86%, rgb(0 0 0 / 0.008) 90%, transparent 94%, transparent 96%);
+}
+
+.demo-in-soft {
+  animation: demo-pop 0.45s cubic-bezier(0.34, 1.3, 0.64, 1) both;
+}
+
+.icon-wiggle {
+  animation: icon-wiggle 0.7s ease-in-out both;
+}
+@keyframes icon-wiggle {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  20% {
+    transform: rotate(-12deg) scale(1.08);
+  }
+  45% {
+    transform: rotate(9deg) scale(1.08);
+  }
+  70% {
+    transform: rotate(-5deg);
+  }
+}
+
+/* Shutters: the reeded-glass bands of a hero swing open one after another, left to right,
+   in step with the headline words rising in. */
+.fluted-live::before {
+  display: none;
+}
+.shutters {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  display: flex;
+  overflow: hidden;
+  pointer-events: none;
+  perspective: 1500px;
+  perspective-origin: 50% 40%;
+}
+.shutters > span {
+  flex: 0 0 96px;
+  height: 100%;
+  transform-origin: 0% 50%;
+  backface-visibility: hidden;
+  background: linear-gradient(90deg, rgb(255 255 255 / 0.5) 0, rgb(255 255 255 / 0.16) 60%, rgb(255 255 255 / 0) 98%);
+  box-shadow: inset -1px 0 0 rgb(70 100 180 / 0.07);
+  animation: shutter-open 0.9s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--i) * 42ms + 60ms) both;
+}
+@keyframes shutter-open {
+  from {
+    transform: rotateY(-92deg);
+    opacity: 0;
+  }
+  35% {
+    opacity: 1;
+  }
+  to {
+    transform: rotateY(0deg);
+    opacity: 1;
+  }
+}
+
+/* Announcement bar: "under construction" animation */
+.construction-tape {
+  height: 4px;
+  background: repeating-linear-gradient(
+    -45deg,
+    #fcd34d 0 10px,
+    #111 10px 20px
+  );
+  background-size: 28.28px 100%;
+  animation: construction-tape 1s linear infinite;
+}
+@keyframes construction-tape {
+  to {
+    background-position: 28.28px 0;
+  }
+}
+.construction-gear {
+  display: inline-block;
+  animation: construction-spin 4s linear infinite;
+}
+.construction-gear-rev {
+  animation-direction: reverse;
+}
+@keyframes construction-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.construction-dots::after {
+  content: "";
+  animation: construction-dots 1.5s steps(4, end) infinite;
+}
+@keyframes construction-dots {
+  0% { content: ""; }
+  25% { content: "."; }
+  50% { content: ".."; }
+  75%, 100% { content: "..."; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .construction-tape,
+  .construction-gear,
+  .construction-dots::after {
+    animation: none;
   }
 }

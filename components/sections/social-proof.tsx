@@ -1,14 +1,16 @@
 import Image from "next/image";
-import Link from "next/link";
-import { caseStudies, homeProofStats, itmEntities, testimonials, type CaseStudy } from "@/lib/content";
-import { site } from "@/lib/site";
+import Link from "@/components/ui/link";
+import type { CaseStudy } from "@/lib/content";
+import { getContent, getLang, getSite } from "@/lib/i18n-server";
+import { tr } from "@/lib/i18n";
 import { Avatar, Button, Container, Eyebrow, cn } from "@/components/ui/primitives";
 import { LogoMark } from "@/components/ui/logo";
 import { CountUp, Reveal } from "@/components/ui/reveal";
 import { PhotoPlaceholder } from "@/components/ui/visuals";
 
 /** Small pill: "Built by Walumo. Backed by ITM Holding." */
-export function TrustBadge({ className, dark }: { className?: string; dark?: boolean }) {
+export async function TrustBadge({ className, dark }: { className?: string; dark?: boolean }) {
+  const { site } = await getSite();
   return (
     <span
       className={cn(
@@ -27,7 +29,8 @@ export function TrustBadge({ className, dark }: { className?: string; dark?: boo
  * Infinite strip of ITM Holding group logos. The source logos are white,
  * so the strip always sits on a dark background.
  */
-export function LogoMarquee({ className }: { className?: string }) {
+export async function LogoMarquee({ className }: { className?: string }) {
+  const { itmEntities } = await getContent();
   const logos = [...itmEntities, ...itmEntities];
   return (
     <div className={cn("relative overflow-hidden [mask-image:linear-gradient(90deg,transparent,#000_10%,#000_90%,transparent)]", className)}>
@@ -51,19 +54,22 @@ export function LogoMarquee({ className }: { className?: string }) {
 }
 
 /** Dark band: "Trusted by organisations building Africa's digital future". */
-export function TrustedStrip({
-  title = "Running every day across the ITM Holding group",
-  text = "23+ companies in 20+ African countries use Kazi Pro, proven in-house before external rollout.",
-}: {
-  title?: string;
-  text?: string;
-}) {
+export async function TrustedStrip({ title: titleProp, text: textProp }: { title?: string; text?: string }) {
+  const lang = await getLang();
+  const title = titleProp ?? tr(lang, "Running every day across the ITM Holding group", "Utilisé chaque jour dans tout le groupe ITM Holding");
+  const text =
+    textProp ??
+    tr(
+      lang,
+      "23+ companies in 20+ African countries use Kazi Pro, proven in-house before external rollout.",
+      "Plus de 23 entreprises dans plus de 20 pays africains utilisent Kazi Pro, éprouvé en interne avant son déploiement externe.",
+    );
   return (
-    <section className="bg-ink py-12 text-white" aria-label="ITM Holding group companies">
+    <section className="bg-ink py-12 text-white" aria-label={tr(lang, "ITM Holding group companies", "Sociétés du groupe ITM Holding")}>
       <Container>
         <div className="mb-8 flex flex-col items-center gap-2 text-center">
           <p className="text-[15px] font-bold text-white/90">{title}</p>
-          {text && <p className="text-[13.5px] text-white/55">{text}</p>}
+          {text && <p className="text-[16px] text-white/70 sm:text-[17px]">{text}</p>}
         </div>
         <LogoMarquee />
       </Container>
@@ -75,14 +81,17 @@ export function TrustedStrip({
  * Proof block: real Hacklab photo + usage figures + reference-call CTA,
  * followed by approved testimonials when there are any.
  */
-export function ProofSplit() {
+export async function ProofSplit() {
+  const lang = await getLang();
+  const { site } = await getSite();
+  const { caseStudies, homeProofStats } = await getContent();
   return (
     <Container>
       <Reveal>
         <div className="grid overflow-hidden rounded-[1.5rem] bg-ink text-white lg:grid-cols-[1fr_1.1fr]">
           <PhotoPlaceholder
             src="/images/hackathon/img_1866.jpg"
-            alt="Members of the Walumo community at the Walumo Hacklab"
+            alt={tr(lang, "Members of the Walumo community at the Walumo Hacklab", "Des membres de la communauté Walumo au Walumo Hacklab")}
             sizes="(max-width: 1024px) 100vw, 45vw"
             className="min-h-[320px] lg:min-h-[520px]"
             overlay
@@ -93,13 +102,17 @@ export function ProofSplit() {
           </PhotoPlaceholder>
           <div className="relative flex flex-col justify-center p-8 sm:p-12 lg:p-14">
             <div className="pointer-events-none absolute -right-24 -top-24 size-96 rounded-full bg-accent/10 blur-3xl" />
-            <Eyebrow dark className="relative self-start">Proven inside ITM Holding</Eyebrow>
+            <Eyebrow dark className="relative self-start">{tr(lang, "Proven inside ITM Holding", "Éprouvé au sein d'ITM Holding")}</Eyebrow>
             <h2 className="relative mt-5 font-serif text-3xl leading-tight sm:text-4xl">
-              Kazi Pro already runs HR across the <em className="italic text-accent">ITM Holding group</em>
+              {tr(lang, "Kazi Pro already runs HR across the ", "Kazi Pro gère déjà les RH de l'ensemble du ")}
+              <em className="not-italic">{tr(lang, "ITM Holding group", "groupe ITM Holding")}</em>
             </h2>
             <p className="relative mt-4 text-[15px] leading-6 text-white/70">
-              Walumo is the technology and product division of ITM Holding, headquartered in Nairobi. Our platforms were
-              deployed and refined inside the group before being offered to other African organisations.
+              {tr(
+                lang,
+                "Walumo is the technology and product division of ITM Holding, headquartered in Nairobi. Our platforms were deployed and refined inside the group before being offered to other African organisations.",
+                "Walumo est la division technologie et produits d'ITM Holding, dont le siège est à Nairobi. Nos plateformes ont été déployées et affinées au sein du groupe avant d'être proposées à d'autres organisations africaines.",
+              )}
             </p>
             <dl className="relative mt-10 grid gap-8 sm:grid-cols-2">
               {homeProofStats.map((s) => (
@@ -117,7 +130,7 @@ export function ProofSplit() {
                 {site.primaryCta.label}
               </Button>
               <Button href="/contact" variant="ghost">
-                Ask for a reference call
+                {tr(lang, "Ask for a reference call", "Demander un appel de référence")}
               </Button>
             </div>
           </div>
@@ -130,7 +143,8 @@ export function ProofSplit() {
 }
 
 /** Approved customer quotes. Renders nothing until `testimonials` in lib/content.ts has entries. */
-export function Testimonials({ className }: { className?: string }) {
+export async function Testimonials({ className }: { className?: string }) {
+  const { testimonials } = await getContent();
   if (testimonials.length === 0) return null;
   return (
     <ul className={cn("grid gap-5 md:grid-cols-2 lg:grid-cols-3", className)}>
@@ -159,12 +173,13 @@ export function Testimonials({ className }: { className?: string }) {
 }
 
 /** Case study teaser: client, headline, three result metrics, link to the full story. */
-export function CaseStudyCard({ study, className }: { study: CaseStudy; className?: string }) {
+export async function CaseStudyCard({ study, className }: { study: CaseStudy; className?: string }) {
+  const lang = await getLang();
   return (
     <Reveal className={className}>
       <article className="grid overflow-hidden rounded-[var(--radius-card)] bg-white shadow-card transition-shadow duration-300 hover:shadow-float lg:grid-cols-[1.1fr_1fr]">
         <div className="flex flex-col justify-center p-8 sm:p-10">
-          <Eyebrow className="self-start">Case study · {study.product}</Eyebrow>
+          <Eyebrow className="self-start">{tr(lang, "Case study", "Étude de cas")} · {study.product}</Eyebrow>
           <h3 className="mt-5 text-[1.6rem] font-medium leading-[1.25] tracking-[-0.02em] text-ink sm:text-[1.85rem]">
             {study.title}
           </h3>
@@ -173,7 +188,7 @@ export function CaseStudyCard({ study, className }: { study: CaseStudy; classNam
             href={`/insights/case-studies#${study.slug}`}
             className="mt-7 text-sm font-bold text-accent-strong hover:text-ink"
           >
-            Read the case study →
+            {tr(lang, "Read the case study →", "Lire l'étude de cas →")}
           </Link>
         </div>
         <dl className="grid grid-cols-3 gap-4 bg-mint p-8 sm:p-10 lg:grid-cols-1 lg:gap-6">

@@ -1,18 +1,20 @@
-import { events } from "@/lib/content";
+import { getContent, getLang } from "@/lib/i18n-server";
+import { tr } from "@/lib/i18n";
 import { Button, Container, Section, SectionHeading } from "@/components/ui/primitives";
 import { Reveal } from "@/components/ui/reveal";
 import { PhotoPlaceholder } from "@/components/ui/visuals";
 
-const hacklab = events[0];
-
 /** Real Hacklab photos: the human side of Walumo on the home page. */
-const collage = [
-  { src: "/images/hackathon/img_2026.jpg", alt: "Participants of the Walumo Hacklab gathered for a group photo", span: "col-span-2 aspect-[16/8]" },
-  { src: "/images/hackathon/img_1888.jpg", alt: "A team demoing their project at the Walumo Hacklab", span: "aspect-[4/3]" },
-  { src: "/images/hackathon/img_2043.jpg", alt: "Walumo Hacklab organisers and participants", span: "aspect-[4/3]" },
+const collage = (lang: "en" | "fr") => [
+  { src: "/images/hackathon/img_2026.jpg", alt: tr(lang, "Participants of the Walumo Hacklab gathered for a group photo", "Les participants du Walumo Hacklab réunis pour une photo de groupe"), span: "col-span-2 aspect-[16/8]" },
+  { src: "/images/hackathon/img_1888.jpg", alt: tr(lang, "A team demoing their project at the Walumo Hacklab", "Une équipe présente son projet au Walumo Hacklab"), span: "aspect-[4/3]" },
+  { src: "/images/hackathon/img_2043.jpg", alt: tr(lang, "Walumo Hacklab organisers and participants", "Organisateurs et participants du Walumo Hacklab"), span: "aspect-[4/3]" },
 ];
 
-export function HacklabSection() {
+export async function HacklabSection() {
+  const lang = await getLang();
+  const { events } = await getContent();
+  const hacklab = events[0];
   return (
     <Section tone="surface">
       <Container className="grid items-center gap-12 lg:grid-cols-[1fr_1.15fr]">
@@ -20,8 +22,8 @@ export function HacklabSection() {
           <SectionHeading
             align="left"
             eyebrow="Walumo Hacklab"
-            title="Building Africa's next generation of"
-            accent="tech talent"
+            title={tr(lang, "Building Africa's next generation of", "Former la prochaine génération de")}
+            accent={tr(lang, "tech talent", "talents tech africains")}
             text={hacklab.summary}
           />
           {hacklab.highlights && (
@@ -36,12 +38,12 @@ export function HacklabSection() {
             </dl>
           )}
           <Button href={`/insights/events/${hacklab.slug}`} variant="outline" arrow className="mt-8">
-            See the Hacklab highlights
+            {tr(lang, "See the Hacklab highlights", "Découvrir les temps forts du Hacklab")}
           </Button>
         </div>
         <Reveal>
           <div className="grid grid-cols-2 gap-3 sm:gap-4">
-            {collage.map((p, i) => (
+            {collage(lang).map((p, i) => (
               <PhotoPlaceholder
                 key={p.src}
                 src={p.src}

@@ -1,25 +1,36 @@
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { Button, CheckList, Container, Eyebrow, cn } from "@/components/ui/primitives";
 import { Check } from "@/components/ui/icons";
-import { SplitWords, Tilt } from "@/components/ui/reveal";
-import { Aurora } from "@/components/ui/visuals";
-import { site } from "@/lib/site";
+import { SplitWords, Tilt, TypedHeadline } from "@/components/ui/reveal";
+import { typedDuration } from "@/lib/typewriter";
+import { getSite } from "@/lib/i18n-server";
 
 const WORD_STEP = 70;
+
+/** Reeded-glass shutters that swing open from left to right as the headline arrives. */
+function Shutters() {
+  return (
+    <div className="shutters" aria-hidden="true">
+      {Array.from({ length: 40 }, (_, i) => (
+        <span key={i} style={{ "--i": i } as CSSProperties} />
+      ))}
+    </div>
+  );
+}
 
 /**
  * Centered hero: serif title whose words rise in one by one, an italic
  * brand-blue accent line, lead paragraph, optional inline checks and CTAs,
  * over a slowly drifting aurora background.
  */
-export function Hero({
+export async function Hero({
   eyebrow,
   eyebrowNode,
   title,
   accent,
   text,
   checks,
-  primary = site.primaryCta,
+  primary: primaryProp,
   secondary,
   children,
   className,
@@ -36,12 +47,17 @@ export function Hero({
   children?: ReactNode;
   className?: string;
 }) {
+  const { site } = await getSite();
+  const primary = primaryProp === undefined ? site.primaryCta : primaryProp;
   const titleWords = typeof title === "string" ? title.split(" ").length : 3;
-  const afterTitle = (typeof accent === "string" ? titleWords + accent.split(" ").length : titleWords) * WORD_STEP;
+  const typed = typeof title === "string" && (accent === undefined || typeof accent === "string");
+  const afterTitle = typed
+    ? Math.round(typedDuration(title as string, accent as string | undefined) * 0.8)
+    : (typeof accent === "string" ? titleWords + accent.split(" ").length : titleWords) * WORD_STEP;
 
   return (
-    <section className={cn("relative isolate overflow-hidden bg-gradient-to-b from-white via-white to-surface", className)}>
-      <Aurora />
+    <section className={cn("fluted fluted-live", className)}>
+      <Shutters />
       <Container className="relative pb-16 pt-16 text-center sm:pt-20 lg:pb-20 lg:pt-28">
         {eyebrowNode && <div className="animate-fade-up">{eyebrowNode}</div>}
         {eyebrow && !eyebrowNode && <Eyebrow className="animate-fade-up">{eyebrow}</Eyebrow>}
@@ -51,6 +67,10 @@ export function Hero({
             eyebrow || eyebrowNode ? "mt-7" : "",
           )}
         >
+          {typed ? (
+            <TypedHeadline title={title as string} accent={accent as string | undefined} />
+          ) : (
+            <>
           {typeof title === "string" ? <SplitWords text={title} step={WORD_STEP} /> : title}
           {accent && (
             <>
@@ -61,12 +81,14 @@ export function Hero({
                     text={accent}
                     delay={titleWords * WORD_STEP}
                     step={WORD_STEP}
-                    wordClassName="text-shimmer pr-[0.06em]"
+                    wordClassName="pr-[0.06em] text-accent-strong"
                   />
                 ) : (
                   <span className="text-accent-strong">{accent}</span>
                 )}
               </em>
+            </>
+          )}
             </>
           )}
         </h1>
@@ -120,13 +142,13 @@ export function Hero({
 /**
  * Two-column hero used on inner pages: copy left, visual right.
  */
-export function SplitHero({
+export async function SplitHero({
   eyebrow,
   title,
   accent,
   text,
   bullets,
-  primary = site.primaryCta,
+  primary: primaryProp,
   secondary,
   visual,
 }: {
@@ -139,9 +161,11 @@ export function SplitHero({
   secondary?: { label: string; href: string } | null;
   visual: ReactNode;
 }) {
+  const { site } = await getSite();
+  const primary = primaryProp === undefined ? site.primaryCta : primaryProp;
   return (
-    <section className="relative isolate overflow-hidden bg-gradient-to-b from-white to-surface">
-      <Aurora />
+    <section className="fluted fluted-live">
+      <Shutters />
       <Container className="relative grid items-center gap-12 py-16 lg:grid-cols-[1.05fr_1fr] lg:py-24">
         <div className="animate-fade-up">
           {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
@@ -155,7 +179,7 @@ export function SplitHero({
             {accent && (
               <>
                 {" "}
-                <em className="text-shimmer pr-[0.06em] italic">{accent}</em>
+                <em className="pr-[0.06em] not-italic">{accent}</em>
               </>
             )}
           </h1>

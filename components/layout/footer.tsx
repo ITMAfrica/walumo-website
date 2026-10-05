@@ -1,10 +1,13 @@
-import Link from "next/link";
-import { footerGroups, hasWhatsapp, legalLinks, site, socials } from "@/lib/site";
+import Link from "@/components/ui/link";
+import { getLang, getSite } from "@/lib/i18n-server";
+import { tr } from "@/lib/i18n";
 import { Logo } from "@/components/ui/logo";
 import { Mail, MapPin, SocialIcon } from "@/components/ui/icons";
 import { NewsletterForm } from "./newsletter-form";
 
-export function Footer() {
+export async function Footer() {
+  const lang = await getLang();
+  const { footerGroups, hasWhatsapp, legalLinks, site, socials } = await getSite();
   return (
     <footer className="bg-ink text-white">
       <div className="mx-auto max-w-[1280px] px-5 sm:px-8 lg:px-10">
@@ -12,10 +15,14 @@ export function Footer() {
         <div className="flex flex-col gap-6 border-b border-white/10 py-14 lg:flex-row lg:items-center lg:justify-between">
           <div className="max-w-xl">
             <p className="font-serif text-3xl leading-tight sm:text-[2.1rem]">
-              Ideas and evidence for African business leaders.
+              {tr(lang, "Ideas and evidence for African business leaders.", "Des idées et des données pour les dirigeants d'entreprise africains.")}
             </p>
             <p className="mt-3 text-[15px] text-white/60">
-              Practical guidance on running and scaling a business in Africa. Unsubscribe in one click.
+              {tr(
+                lang,
+                "Practical guidance on running and scaling a business in Africa. Unsubscribe in one click.",
+                "Des conseils pratiques pour gérer et développer une entreprise en Afrique. Désinscription en un clic.",
+              )}
             </p>
           </div>
           <NewsletterForm dark />
@@ -38,7 +45,7 @@ export function Footer() {
             </div>
           ))}
           <div className="col-span-2 sm:col-span-3 lg:col-span-1">
-            <p className="text-[13px] text-white/50">Contact</p>
+            <p className="text-[13px] text-white/50">{tr(lang, "Contact", "Contact")}</p>
             <ul className="mt-4 space-y-3 text-[15px] text-white/90">
               <li className="flex gap-2">
                 <MapPin size={17} className="mt-0.5 shrink-0 text-accent" />
@@ -53,7 +60,7 @@ export function Footer() {
               {hasWhatsapp && (
                 <li>
                   <a href={site.whatsappCta.href} className="font-medium text-accent hover:text-white">
-                    Chat on WhatsApp →
+                    {tr(lang, "Chat on WhatsApp →", "Écrivez-nous sur WhatsApp →")}
                   </a>
                 </li>
               )}
@@ -81,7 +88,7 @@ export function Footer() {
               <li key={s.label}>
                 <a
                   href={s.href}
-                  aria-label={`${site.name} on ${s.label}`}
+                  aria-label={tr(lang, `${site.name} on ${s.label}`, `${site.name} sur ${s.label}`)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-white/80 transition-colors hover:text-accent"
@@ -93,7 +100,7 @@ export function Footer() {
           </ul>
         </div>
         <p className="pb-10 text-[13px] text-white/45">
-          © {new Date().getFullYear()} {site.name}. The technology arm of ITM Holding.
+          © {new Date().getFullYear()} {site.name}. {tr(lang, "The technology arm of ITM Holding.", "Le bras technologique d'ITM Holding.")}
         </p>
       </div>
     </footer>

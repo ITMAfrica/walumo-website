@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { CheckList, Eyebrow, TextLink, cn } from "@/components/ui/primitives";
+import { useLang } from "@/components/ui/locale";
+import { tr } from "@/lib/i18n";
 import styles from "./product-tabs.module.css";
 
 export type ProductTab = {
@@ -16,13 +18,14 @@ export type ProductTab = {
   visual: ReactNode;
 };
 
-const DURATION = 7000;
+const DURATION = 11500;
 
 /**
  * Product switcher: tabs rotate automatically with a progress bar (like a story),
  * pause on hover, and stop once the visitor picks a tab.
  */
 export function ProductTabs({ tabs }: { tabs: ProductTab[] }) {
+  const lang = useLang();
   const [active, setActive] = useState(0);
   const [progress, setProgress] = useState(0);
   const [hovered, setHovered] = useState(false);
@@ -81,7 +84,7 @@ export function ProductTabs({ tabs }: { tabs: ProductTab[] }) {
         if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setFocusWithin(false);
       }}
     >
-      <div role="tablist" aria-label="Walumo products" className="grid gap-2 sm:grid-cols-3">
+      <div role="tablist" aria-label={tr(lang, "Walumo products", "Produits Walumo")} className="grid gap-2 sm:grid-cols-3">
         {tabs.map((t, i) => (
           <button
             key={t.id}

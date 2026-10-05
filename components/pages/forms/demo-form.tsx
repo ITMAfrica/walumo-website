@@ -1,10 +1,12 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/ui/link";
 import { useSearchParams } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { Check } from "@/components/ui/icons";
 import { cn } from "@/components/ui/primitives";
+import { useLang } from "@/components/ui/locale";
+import { tr } from "@/lib/i18n";
 
 export const interests = [
   { value: "kazi-pro", label: "Kazi Pro" },
@@ -12,6 +14,11 @@ export const interests = [
   { value: "sales-tracker", label: "Sales Tracker" },
   { value: "digital-transformation", label: "Digital transformation" },
 ] as const;
+
+/** French labels for the interest options (values stay stable). */
+const interestLabelFr: Record<string, string> = {
+  "digital-transformation": "Transformation numérique",
+};
 
 const sizes = ["1–20", "21–50", "51–200", "201–500", "500+"];
 
@@ -37,6 +44,7 @@ type Errors = Partial<Record<"name" | "email" | "company" | "role" | "size" | "i
  * TODO: connect `submit` to your email/CRM endpoint (e.g. a Route Handler) — it currently simulates success.
  */
 export function DemoForm() {
+  const lang = useLang();
   const params = useSearchParams();
   const initial = params.get("interest") ?? "";
   const [interest, setInterest] = useState<string>(interestAlias[initial] ?? (interests.some((i) => i.value === initial) ? initial : ""));
@@ -55,13 +63,13 @@ export function DemoForm() {
     const data = new FormData(form);
     const get = (k: string) => String(data.get(k) ?? "").trim();
     const next: Errors = {};
-    if (!get("name")) next.name = "Please enter your full name.";
-    if (!EMAIL.test(get("email"))) next.email = "Please enter a valid email address.";
-    else if (FREE_MAIL.test(get("email"))) next.email = "Please use your work email so we can route your request.";
-    if (!get("company")) next.company = "Please enter your company or organisation.";
-    if (!get("role")) next.role = "Please enter your role.";
-    if (!get("size")) next.size = "Please select your company size.";
-    if (!interest) next.interest = "Please choose the product or solution you're interested in.";
+    if (!get("name")) next.name = tr(lang, "Please enter your full name.", "Veuillez saisir votre nom complet.");
+    if (!EMAIL.test(get("email"))) next.email = tr(lang, "Please enter a valid email address.", "Veuillez saisir une adresse e-mail valide.");
+    else if (FREE_MAIL.test(get("email"))) next.email = tr(lang, "Please use your work email so we can route your request.", "Veuillez utiliser votre e-mail professionnel afin que nous puissions orienter votre demande.");
+    if (!get("company")) next.company = tr(lang, "Please enter your company or organisation.", "Veuillez saisir le nom de votre entreprise ou organisation.");
+    if (!get("role")) next.role = tr(lang, "Please enter your role.", "Veuillez saisir votre fonction.");
+    if (!get("size")) next.size = tr(lang, "Please select your company size.", "Veuillez sélectionner la taille de votre entreprise.");
+    if (!interest) next.interest = tr(lang, "Please choose the product or solution you're interested in.", "Veuillez choisir le produit ou la solution qui vous intéresse.");
     setErrors(next);
     if (Object.keys(next).length) {
       form.querySelector<HTMLElement>("[aria-invalid='true']")?.focus();
@@ -82,9 +90,9 @@ export function DemoForm() {
         <span className="flex size-14 items-center justify-center rounded-full bg-accent-soft text-accent-strong">
           <Check size={28} />
         </span>
-        <h2 className="mt-6 font-serif text-3xl text-ink">Thanks — we&apos;ve got it.</h2>
+        <h2 className="mt-6 font-serif text-3xl text-ink">{tr(lang, "Thanks — we've got it.", "Merci, nous avons bien reçu votre demande.")}</h2>
         <p className="mt-3 max-w-sm text-[15px] leading-6 text-muted">
-          A member of the Walumo team will be in touch with you shortly.
+          {tr(lang, "A member of the Walumo team will be in touch with you shortly.", "Un membre de l'équipe Walumo vous contactera très prochainement.")}
         </p>
       </div>
     );
@@ -104,37 +112,37 @@ export function DemoForm() {
     <form noValidate onSubmit={onSubmit} className="space-y-5" aria-busy={status === "sending"}>
       <div className="grid gap-5 sm:grid-cols-2">
         <div>
-          <label htmlFor="demo-name" className="text-sm font-bold text-ink">Full name *</label>
+          <label htmlFor="demo-name" className="text-sm font-bold text-ink">{tr(lang, "Full name *", "Nom complet *")}</label>
           <input id="demo-name" name="name" autoComplete="name" aria-invalid={invalid("name")} aria-describedby={describedBy("name")} className={cn(inputClass, border("name"))} />
           {err("name")}
         </div>
         <div>
-          <label htmlFor="demo-email" className="text-sm font-bold text-ink">Work email *</label>
-          <input id="demo-email" name="email" type="email" autoComplete="email" placeholder="name@company.com" aria-invalid={invalid("email")} aria-describedby={describedBy("email")} className={cn(inputClass, border("email"))} />
+          <label htmlFor="demo-email" className="text-sm font-bold text-ink">{tr(lang, "Work email *", "E-mail professionnel *")}</label>
+          <input id="demo-email" name="email" type="email" autoComplete="email" placeholder={tr(lang, "name@company.com", "nom@entreprise.com")} aria-invalid={invalid("email")} aria-describedby={describedBy("email")} className={cn(inputClass, border("email"))} />
           {err("email")}
         </div>
       </div>
       <div className="grid gap-5 sm:grid-cols-2">
         <div>
-          <label htmlFor="demo-company" className="text-sm font-bold text-ink">Company / organisation *</label>
+          <label htmlFor="demo-company" className="text-sm font-bold text-ink">{tr(lang, "Company / organisation *", "Entreprise / organisation *")}</label>
           <input id="demo-company" name="company" autoComplete="organization" aria-invalid={invalid("company")} aria-describedby={describedBy("company")} className={cn(inputClass, border("company"))} />
           {err("company")}
         </div>
         <div>
-          <label htmlFor="demo-role" className="text-sm font-bold text-ink">Role *</label>
+          <label htmlFor="demo-role" className="text-sm font-bold text-ink">{tr(lang, "Role *", "Fonction *")}</label>
           <input id="demo-role" name="role" autoComplete="organization-title" aria-invalid={invalid("role")} aria-describedby={describedBy("role")} className={cn(inputClass, border("role"))} />
           {err("role")}
         </div>
       </div>
       <div>
-        <label htmlFor="demo-size" className="text-sm font-bold text-ink">Company size *</label>
+        <label htmlFor="demo-size" className="text-sm font-bold text-ink">{tr(lang, "Company size *", "Taille de l'entreprise *")}</label>
         <select id="demo-size" name="size" defaultValue="" aria-invalid={invalid("size")} aria-describedby={describedBy("size")} className={cn(inputClass, border("size"))}>
           <option value="" disabled>
-            Select a range
+            {tr(lang, "Select a range", "Sélectionnez une tranche")}
           </option>
           {sizes.map((s) => (
             <option key={s} value={s}>
-              {s} employees
+              {s} {tr(lang, "employees", "employés")}
             </option>
           ))}
         </select>
@@ -142,7 +150,7 @@ export function DemoForm() {
       </div>
 
       <fieldset>
-        <legend className="text-sm font-bold text-ink">Product or solution of interest *</legend>
+        <legend className="text-sm font-bold text-ink">{tr(lang, "Product or solution of interest *", "Produit ou solution qui vous intéresse *")}</legend>
         <div className="mt-2 flex flex-wrap gap-2" role="radiogroup" aria-invalid={invalid("interest")} aria-describedby={describedBy("interest")}>
           {interests.map((i) => (
             <label
@@ -153,7 +161,7 @@ export function DemoForm() {
               )}
             >
               <input type="radio" name="interest-choice" value={i.value} className="sr-only" checked={interest === i.value} onChange={() => setInterest(i.value)} />
-              {i.label}
+              {lang === "fr" ? (interestLabelFr[i.value] ?? i.label) : i.label}
             </label>
           ))}
         </div>
@@ -161,19 +169,19 @@ export function DemoForm() {
       </fieldset>
 
       <div>
-        <label htmlFor="demo-message" className="text-sm font-bold text-ink">How can we help?</label>
+        <label htmlFor="demo-message" className="text-sm font-bold text-ink">{tr(lang, "How can we help?", "Comment pouvons-nous vous aider ?")}</label>
         <textarea
           id="demo-message"
           name="message"
           rows={4}
-          placeholder="Tell us what you would like to solve in your organisation."
+          placeholder={tr(lang, "Tell us what you would like to solve in your organisation.", "Dites-nous ce que vous souhaitez résoudre dans votre organisation.")}
           className={cn(inputClass, "h-auto border-line py-3")}
         />
       </div>
 
       {status === "error" && (
         <p className="rounded-xl bg-[#fdecec] px-4 py-3 text-sm text-[#b3412e]" role="alert">
-          Something went wrong. Please try again, or email us directly.
+          {tr(lang, "Something went wrong. Please try again, or email us directly.", "Une erreur s'est produite. Veuillez réessayer ou nous écrire directement par e-mail.")}
         </p>
       )}
 
@@ -182,12 +190,12 @@ export function DemoForm() {
         disabled={status === "sending"}
         className="h-12 w-full rounded-full bg-ink text-[15px] font-bold text-white transition-colors hover:bg-ink-soft disabled:cursor-wait disabled:opacity-70"
       >
-        {status === "sending" ? "Sending…" : "Request a Demo"}
+        {status === "sending" ? tr(lang, "Sending…", "Envoi en cours…") : tr(lang, "Request a Demo", "Demander une démo")}
       </button>
       <p className="text-center text-[12.5px] leading-5 text-muted">
-        We use your details only to respond to your enquiry. See our{" "}
+        {tr(lang, "We use your details only to respond to your enquiry. See our", "Nous utilisons vos informations uniquement pour répondre à votre demande. Consultez notre")}{" "}
         <Link href="/privacy-policy" className="underline underline-offset-2 hover:text-ink">
-          privacy policy
+          {tr(lang, "privacy policy", "politique de confidentialité")}
         </Link>
         .
       </p>
