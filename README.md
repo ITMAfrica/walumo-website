@@ -1,4 +1,4 @@
-# Walumo website (Next.js 16)
+# Walumo website
 
 Walumo's website rebuilt on the Nova template layout (centered serif headings with an italic accent, rounded cards, dark stats band, logo marquee, dark footer), with Walumo's brand, content and assets.
 
