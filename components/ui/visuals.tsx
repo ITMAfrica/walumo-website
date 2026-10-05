@@ -95,7 +95,7 @@ export function PhotoPlaceholder({
 }
 
 /**
- * Slowly drifting, blurred brand-colour blobs over a faint grid.
+ * Slowly drifting, blurred brand-colour blobs.
  * Purely decorative: place inside a `relative overflow-hidden` parent.
  */
 export function Aurora({ dark, className }: { dark?: boolean; className?: string }) {
@@ -119,7 +119,6 @@ export function Aurora({ dark, className }: { dark?: boolean; className?: string
           dark ? "bg-[#3b5bdb]/25" : "bg-[#9cc7f0]/35",
         )}
       />
-      <div className={cn("absolute inset-0", dark ? "bg-grid-dark" : "bg-grid")} />
     </div>
   );
 }
