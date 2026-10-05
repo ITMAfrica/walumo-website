@@ -1,6 +1,6 @@
 import { Hero } from "@/components/sections/hero";
 import { ProofSplit, TrustBadge, TrustedStrip } from "@/components/sections/social-proof";
-import { CtaBanner, PillarCard, Steps } from "@/components/sections/blocks";
+import { CtaBanner, Steps } from "@/components/sections/blocks";
 import { InsightsGrid } from "@/components/sections/collections";
 import { HacklabSection } from "@/components/sections/community";
 import { Container, CtaPair, Section, SectionHeading, TextLink } from "@/components/ui/primitives";
@@ -8,6 +8,8 @@ import { FeatureIcon } from "@/components/ui/icons";
 import { Reveal, ScrollStatement } from "@/components/ui/reveal";
 import { PhotoPlaceholder } from "@/components/ui/visuals";
 import { KaziMiniMock, SalesPipelineMock, TalentMiniMock } from "@/components/ui/product-mocks";
+import { HeroFollowUps, HeroLeaveCard } from "@/components/sections/interactive-hero";
+import { ProductTabs } from "@/components/sections/product-tabs";
 import { deliverySteps, painPoints, products } from "@/lib/content";
 import { site } from "@/lib/site";
 
@@ -33,22 +35,16 @@ export default function HomePage() {
               priority
               className="aspect-[4/3] rounded-[1.5rem] shadow-float sm:aspect-[16/9]"
             />
-            <KaziMiniMock className="absolute -bottom-10 -left-4 hidden w-[300px] lg:block lg:-left-12" />
-            <div className="absolute -right-4 top-10 hidden w-[290px] lg:-right-12 lg:block">
-              <div className="rounded-2xl bg-white p-4 shadow-float">
-                <p className="text-[12px] font-bold uppercase tracking-[0.08em] text-muted">Follow-ups today</p>
-                <ul className="mt-3 space-y-2">
-                  {["Call Savanna Foods", "Send proposal to Mara Distributors", "Visit Kilimani Hardware"].map((t) => (
-                    <li key={t} className="flex items-center gap-2 text-[13px] text-ink">
-                      <span className="size-2 rounded-full bg-accent-strong" aria-hidden="true" />
-                      {t}
-                    </li>
-                  ))}
-                </ul>
-                <p className="mt-3 text-[11.5px] text-muted">Sales Tracker · illustrative data</p>
-              </div>
+            <HeroLeaveCard className="relative z-10 mx-auto -mt-16 lg:hidden" />
+            <div className="absolute -bottom-12 -left-4 hidden w-[300px] animate-float hover:[animation-play-state:paused] lg:block lg:-left-12">
+              <HeroLeaveCard />
             </div>
-            <TalentMiniMock className="absolute -bottom-12 right-10 hidden w-[290px] xl:block" />
+            <div className="absolute -right-4 top-10 hidden w-[290px] animate-float hover:[animation-play-state:paused] [animation-delay:-3s] lg:-right-12 lg:block">
+              <HeroFollowUps />
+            </div>
+            <div className="absolute -bottom-12 right-10 hidden w-[290px] animate-float hover:[animation-play-state:paused] [animation-delay:-1.5s] xl:block">
+              <TalentMiniMock />
+            </div>
           </div>
         </Container>
       </Hero>
@@ -64,7 +60,7 @@ export default function HomePage() {
           <ul className="mt-16 grid gap-5 md:grid-cols-3">
             {painPoints.map((p, i) => (
               <Reveal as="li" key={p.title} delay={i * 80}>
-                <div className="h-full rounded-[var(--radius-card)] bg-white p-7 shadow-card">
+                <div className="h-full rounded-[var(--radius-card)] bg-white p-7 shadow-card transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-float">
                   <span className="flex size-11 items-center justify-center rounded-xl bg-[#fdecec] text-[#b3412e]">
                     <FeatureIcon name={p.icon} size={20} />
                   </span>
@@ -86,52 +82,61 @@ export default function HomePage() {
             accent="hiring and sales"
             text="Kazi Pro, Talent Pro and Sales Tracker share one login, one design and one source of truth — so your people, your hiring and your sales all work together."
           />
-          <div className="mt-14 space-y-6">
-            <PillarCard
-              eyebrow={kazi.category}
-              title={`${kazi.headline} ${kazi.accent}`}
-              text={kazi.body}
-              items={kazi.modules.slice(0, 4).map((m) => m.title)}
-              href="/products/kazi-pro"
-              linkLabel="Discover Kazi Pro"
-              visual={
-                <PhotoPlaceholder tone="sky" className="absolute inset-0">
-                  <div className="flex h-full items-center justify-center p-8">
-                    <KaziMiniMock />
-                  </div>
-                </PhotoPlaceholder>
-              }
-            />
-            <PillarCard
-              reverse
-              eyebrow={talent.category}
-              title={`${talent.headline} ${talent.accent}`}
-              text={talent.body}
-              items={talent.modules.slice(0, 4).map((m) => m.title)}
-              href="/products/talent-pro"
-              linkLabel="Discover Talent Pro"
-              visual={
-                <PhotoPlaceholder tone="mint" className="absolute inset-0">
-                  <div className="flex h-full items-center justify-center p-8">
-                    <TalentMiniMock />
-                  </div>
-                </PhotoPlaceholder>
-              }
-            />
-            <PillarCard
-              eyebrow={sales.category}
-              title={`${sales.headline} ${sales.accent}`}
-              text={sales.body}
-              items={sales.modules.slice(0, 4).map((m) => m.title)}
-              href="/products/sales-tracker"
-              linkLabel="Discover Sales Tracker"
-              visual={
-                <PhotoPlaceholder tone="sand" className="absolute inset-0">
-                  <div className="flex h-full items-center justify-center p-6">
-                    <SalesPipelineMock compact />
-                  </div>
-                </PhotoPlaceholder>
-              }
+          <div className="mt-14">
+            <ProductTabs
+              tabs={[
+                {
+                  id: kazi.slug,
+                  name: kazi.name,
+                  category: kazi.category,
+                  title: `${kazi.headline} ${kazi.accent}`,
+                  text: kazi.body,
+                  items: kazi.modules.slice(0, 4).map((m) => m.title),
+                  href: "/products/kazi-pro",
+                  linkLabel: "Discover Kazi Pro",
+                  visual: (
+                    <PhotoPlaceholder tone="sky" className="absolute inset-0">
+                      <div className="flex h-full items-center justify-center p-8">
+                        <KaziMiniMock />
+                      </div>
+                    </PhotoPlaceholder>
+                  ),
+                },
+                {
+                  id: talent.slug,
+                  name: talent.name,
+                  category: talent.category,
+                  title: `${talent.headline} ${talent.accent}`,
+                  text: talent.body,
+                  items: talent.modules.slice(0, 4).map((m) => m.title),
+                  href: "/products/talent-pro",
+                  linkLabel: "Discover Talent Pro",
+                  visual: (
+                    <PhotoPlaceholder tone="mint" className="absolute inset-0">
+                      <div className="flex h-full items-center justify-center p-8">
+                        <TalentMiniMock />
+                      </div>
+                    </PhotoPlaceholder>
+                  ),
+                },
+                {
+                  id: sales.slug,
+                  name: sales.name,
+                  category: sales.category,
+                  title: `${sales.headline} ${sales.accent}`,
+                  text: sales.body,
+                  items: sales.modules.slice(0, 4).map((m) => m.title),
+                  href: "/products/sales-tracker",
+                  linkLabel: "Discover Sales Tracker",
+                  visual: (
+                    <PhotoPlaceholder tone="sand" className="absolute inset-0">
+                      <div className="flex h-full items-center justify-center p-6">
+                        <SalesPipelineMock compact />
+                      </div>
+                    </PhotoPlaceholder>
+                  ),
+                },
+              ]}
             />
           </div>
           <CtaPair className="mt-12" primary={site.primaryCta} secondary={{ label: "Explore the full ecosystem", href: "/products" }} />

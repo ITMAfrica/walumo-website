@@ -1,4 +1,5 @@
 import Image from "next/image";
+import type { CSSProperties } from "react";
 import { cn } from "./primitives";
 import { FeatureIcon } from "./icons";
 import { LogoMark } from "./logo";
@@ -56,31 +57,42 @@ export function SalesPipelineMock({ className, compact }: { className?: string; 
   const columns = Object.entries(deals);
   return (
     <div
-      className={cn("w-full rounded-2xl border border-line bg-white p-4 shadow-float", className)}
+      className={cn("sales-pipeline-motion relative isolate w-full rounded-2xl border border-line bg-white p-4 shadow-float", className)}
       role="img"
       aria-label="Illustration of the Sales Tracker pipeline board"
     >
-      <div className="flex items-center justify-between gap-3">
+      <div className="relative z-10 flex items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <span className="flex size-7 items-center justify-center rounded-lg bg-ink text-accent">
             <FeatureIcon name="chart" size={15} />
           </span>
           <p className="text-sm font-bold text-ink">Pipeline · This quarter</p>
         </div>
-        <span className="rounded-full bg-accent-soft px-2.5 py-1 text-[11px] font-bold text-accent-strong">3 follow-ups due</span>
+        <span className="sales-pipeline-alert rounded-full bg-accent-soft px-2.5 py-1 text-[11px] font-bold text-accent-strong">3 follow-ups due</span>
       </div>
-      <div className={cn("mt-4 grid gap-2.5", compact ? "grid-cols-2 sm:grid-cols-4" : "grid-cols-2 md:grid-cols-4")}>
-        {columns.map(([stage, items]) => (
-          <div key={stage} className="rounded-xl bg-surface p-2">
+      <span className="sales-pipeline-signal" aria-hidden="true">
+        <span />
+      </span>
+      <div className={cn("relative z-10 mt-4 grid gap-2.5", compact ? "grid-cols-2 sm:grid-cols-4" : "grid-cols-2 md:grid-cols-4")}>
+        {columns.map(([stage, items], stageIndex) => (
+          <div
+            key={stage}
+            className="sales-pipeline-stage relative overflow-hidden rounded-xl bg-surface p-2 transition-[transform,background-color] duration-300 hover:-translate-y-1 hover:bg-surface-2"
+            style={{ "--stage-delay": `${360 + stageIndex * 90}ms` } as CSSProperties}
+          >
             <p className="flex items-center justify-between px-1 text-[11px] font-bold uppercase tracking-wide text-muted">
               {stage}
-              <span className="text-ink/50">{items.length}</span>
+              <span className="tabular-nums text-ink/50">{items.length}</span>
             </p>
             <ul className="mt-2 space-y-2">
-              {items.map((d) => (
-                <li key={d.name} className="rounded-lg bg-white p-2.5 shadow-card">
+              {items.map((d, dealIndex) => (
+                <li
+                  key={d.name}
+                  className="sales-pipeline-deal rounded-lg bg-white p-2.5 shadow-card transition-[transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:shadow-float"
+                  style={{ "--deal-delay": `${520 + (stageIndex * 2 + dealIndex) * 55}ms` } as CSSProperties}
+                >
                   <p className="truncate text-[12px] font-bold text-ink">{d.name}</p>
-                  <p className="mt-0.5 text-[11px] text-accent-strong">{d.value}</p>
+                  <p className="mt-0.5 text-[11px] tabular-nums text-accent-strong">{d.value}</p>
                   <p className={cn("mt-1.5 inline-flex rounded px-1.5 py-0.5 text-[10px]", stage === "Won" ? "bg-[#e3f6ea] text-[#1f7a45]" : "bg-[#fff3dc] text-[#9a6700]")}>
                     {d.due}
                   </p>

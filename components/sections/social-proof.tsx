@@ -136,7 +136,7 @@ export function Testimonials({ className }: { className?: string }) {
     <ul className={cn("grid gap-5 md:grid-cols-2 lg:grid-cols-3", className)}>
       {testimonials.map((t, i) => (
         <Reveal as="li" key={t.name} delay={i * 80}>
-          <figure className="flex h-full flex-col rounded-[var(--radius-card)] bg-white p-7 shadow-card">
+          <figure className="flex h-full flex-col rounded-[var(--radius-card)] bg-white p-7 shadow-card transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-float">
             <blockquote className="flex-1 text-[16px] leading-7 text-ink">“{t.quote}”</blockquote>
             <figcaption className="mt-6 flex items-center gap-3 border-t border-line pt-5">
               {t.photo ? (
@@ -162,7 +162,7 @@ export function Testimonials({ className }: { className?: string }) {
 export function CaseStudyCard({ study, className }: { study: CaseStudy; className?: string }) {
   return (
     <Reveal className={className}>
-      <article className="grid overflow-hidden rounded-[var(--radius-card)] bg-white shadow-card lg:grid-cols-[1.1fr_1fr]">
+      <article className="grid overflow-hidden rounded-[var(--radius-card)] bg-white shadow-card transition-shadow duration-300 hover:shadow-float lg:grid-cols-[1.1fr_1fr]">
         <div className="flex flex-col justify-center p-8 sm:p-10">
           <Eyebrow className="self-start">Case study · {study.product}</Eyebrow>
           <h3 className="mt-5 text-[1.6rem] font-medium leading-[1.25] tracking-[-0.02em] text-ink sm:text-[1.85rem]">

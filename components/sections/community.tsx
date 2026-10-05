@@ -47,7 +47,7 @@ export function HacklabSection() {
                 src={p.src}
                 alt={p.alt}
                 sizes={i === 0 ? "(max-width: 1024px) 100vw, 55vw" : "(max-width: 1024px) 50vw, 28vw"}
-                className={`${p.span} rounded-[var(--radius-card)]`}
+                className={`${p.span} rounded-[var(--radius-card)] transition-transform duration-500 hover:scale-[1.02] [&_img]:transition-transform [&_img]:duration-700 hover:[&_img]:scale-105`}
               />
             ))}
           </div>

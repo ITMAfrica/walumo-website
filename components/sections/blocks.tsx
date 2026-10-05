@@ -163,8 +163,8 @@ export function Steps({ steps }: { steps: { title: string; text: string }[] }) {
     <ol className="relative grid gap-5 md:grid-cols-2 lg:grid-cols-3">
       {steps.map((s, i) => (
         <Reveal as="li" key={s.title} delay={i * 60}>
-          <div className="h-full rounded-[var(--radius-card)] border border-line bg-white p-7">
-            <span className="font-serif text-4xl text-accent-strong">{String(i + 1).padStart(2, "0")}</span>
+          <div className="group h-full rounded-[var(--radius-card)] border border-line bg-white p-7 transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:border-accent-strong/30 hover:shadow-card">
+            <span className="inline-block font-serif text-4xl text-accent-strong transition-transform duration-300 group-hover:scale-110">{String(i + 1).padStart(2, "0")}</span>
             <h3 className="mt-4 text-lg font-semibold text-ink">{s.title}</h3>
             <p className="mt-2 text-[15px] leading-6 text-muted">{s.text}</p>
           </div>

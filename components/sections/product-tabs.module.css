@@ -1,0 +1,245 @@
+@keyframes copy-arrive {
+  from {
+    opacity: 0.15;
+    filter: blur(6px);
+    transform: translateX(-14px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateX(0);
+  }
+}
+
+@keyframes visual-reveal {
+  from {
+    opacity: 0.5;
+    clip-path: inset(0 0 0 14%);
+    filter: saturate(0.75);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0);
+    filter: saturate(1);
+  }
+}
+
+@keyframes board-arrive {
+  from {
+    opacity: 0.45;
+    transform: perspective(900px) rotateY(-3deg) translateX(18px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: perspective(900px) rotateY(0) translateX(0) scale(1);
+  }
+}
+
+@keyframes stage-arrive {
+  from {
+    opacity: 0.3;
+    clip-path: inset(0 0 16% 0);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0);
+  }
+}
+
+@keyframes deal-arrive {
+  from {
+    opacity: 0;
+    clip-path: inset(0 0 22% 0 round 0.5rem);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0 round 0.5rem);
+    filter: blur(0);
+  }
+}
+
+@keyframes stage-line {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes signal-in {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  18%,
+  75% {
+    opacity: 1;
+  }
+}
+
+@keyframes signal-travel {
+  from {
+    transform: translateX(-120%);
+  }
+  to {
+    transform: translateX(460%);
+  }
+}
+
+@keyframes alert-arrive {
+  0% {
+    background-color: var(--color-accent-soft);
+    box-shadow: 0 0 0 0 rgb(37 112 200 / 0);
+  }
+  45% {
+    background-color: #d6e9ff;
+    box-shadow: 0 0 0 5px rgb(37 112 200 / 0.1);
+  }
+  100% {
+    background-color: var(--color-accent-soft);
+    box-shadow: 0 0 0 8px rgb(37 112 200 / 0);
+  }
+}
+
+.tab {
+  backface-visibility: hidden;
+}
+
+.activeTab {
+  transform: translateY(-2px);
+}
+
+.progress {
+  will-change: transform;
+}
+
+.panel {
+  isolation: isolate;
+}
+
+.copy {
+  isolation: isolate;
+}
+
+.visual {
+  position: relative;
+}
+
+.inView .copy > * {
+  animation: copy-arrive 560ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.inView .copy > :nth-child(1) {
+  animation-delay: 80ms;
+}
+
+.inView .copy > :nth-child(2) {
+  animation-delay: 130ms;
+}
+
+.inView .copy > :nth-child(3) {
+  animation-delay: 190ms;
+}
+
+.inView .copy > :nth-child(4) {
+  animation-delay: 250ms;
+}
+
+.inView .copy > :nth-child(5) {
+  animation-delay: 310ms;
+}
+
+.inView .visual {
+  animation: visual-reveal 760ms cubic-bezier(0.16, 1, 0.3, 1) 40ms both;
+}
+
+.inView :global(.sales-pipeline-motion) {
+  animation: board-arrive 720ms cubic-bezier(0.16, 1, 0.3, 1) 160ms both;
+  transform-origin: right center;
+}
+
+.panel :global(.sales-pipeline-stage::before) {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 2px;
+  content: "";
+  background: linear-gradient(90deg, var(--color-accent-strong), var(--color-accent));
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.inView :global(.sales-pipeline-stage) {
+  animation: stage-arrive 460ms cubic-bezier(0.16, 1, 0.3, 1) var(--stage-delay) both;
+}
+
+.inView :global(.sales-pipeline-stage::before) {
+  animation: stage-line 420ms cubic-bezier(0.16, 1, 0.3, 1) var(--stage-delay) both;
+}
+
+.inView :global(.sales-pipeline-deal) {
+  animation: deal-arrive 420ms cubic-bezier(0.16, 1, 0.3, 1) var(--deal-delay) both;
+}
+
+.panel :global(.sales-pipeline-signal) {
+  position: absolute;
+  z-index: 0;
+  top: 3.55rem;
+  right: 1rem;
+  left: 1rem;
+  height: 1px;
+  overflow: hidden;
+  background: linear-gradient(90deg, transparent, rgb(37 112 200 / 0.14), transparent);
+  opacity: 0;
+}
+
+.panel :global(.sales-pipeline-signal > span) {
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  width: 24%;
+  background: linear-gradient(90deg, transparent, var(--color-accent-strong), transparent);
+  transform: translateX(-120%);
+}
+
+.inView :global(.sales-pipeline-signal) {
+  animation: signal-in 1.35s ease-out 360ms both;
+}
+
+.inView :global(.sales-pipeline-signal > span) {
+  animation: signal-travel 1.2s cubic-bezier(0.16, 1, 0.3, 1) 390ms both;
+}
+
+.inView :global(.sales-pipeline-alert) {
+  animation: alert-arrive 620ms ease-out 1.05s both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .activeTab,
+  .inView :global(.sales-pipeline-stage:hover),
+  .inView :global(.sales-pipeline-deal:hover) {
+    transform: none;
+  }
+
+  .activeTab .progress {
+    transform: scaleX(1) !important;
+  }
+
+  .inView .copy > *,
+  .inView .visual,
+  .inView :global(.sales-pipeline-motion),
+  .inView :global(.sales-pipeline-stage),
+  .inView :global(.sales-pipeline-stage::before),
+  .inView :global(.sales-pipeline-deal),
+  .inView :global(.sales-pipeline-alert) {
+    animation: none !important;
+    opacity: 1;
+    clip-path: none;
+    filter: none;
+  }
+
+  .panel :global(.sales-pipeline-signal) {
+    display: none;
+  }
+}
